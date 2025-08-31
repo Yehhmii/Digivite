@@ -70,7 +70,7 @@ export default function AttendanceModal({ isOpen, onClose, slug }: AttendanceMod
         <div className="p-6">
           <div className="flex justify-between items-center mb-6">
             <h3 className="text-2xl font-serif text-[#1a000d]">
-              We're Excited!
+              {`We're Excited!`}
             </h3>
             <button
               onClick={onClose}

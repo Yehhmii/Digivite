@@ -5,6 +5,13 @@ import React, { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 
+type Gift = {
+  id: string;
+  amount?: number | null;
+  note?: string | null;
+  createdAt: string;
+};
+
 type GuestShort = {
   id: string;
   fullName: string;
@@ -15,10 +22,11 @@ type GuestShort = {
   checkedIn?: boolean;
   checkInTime?: string | null;
   status?: 'PENDING' | 'ACCEPTED' | 'DECLINED';
+  gifts?: Gift[];
 };
 
 export default function StatusPage() {
-  const { data: session, status } = useSession();
+  const { status } = useSession();
   const router = useRouter();
 
   const [counts, setCounts] = useState({ PENDING: 0, ACCEPTED: 0, DECLINED: 0 });
@@ -47,7 +55,6 @@ export default function StatusPage() {
   useEffect(() => {
     if (status !== 'authenticated') return;
     fetchStatus();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status]);
 
   async function fetchStatus() {
@@ -66,9 +73,14 @@ export default function StatusPage() {
         ACCEPTED: data.guestsByStatus?.ACCEPTED || [],
         DECLINED: data.guestsByStatus?.DECLINED || []
       });
-    } catch (err: any) {
-      console.error('status fetch error', err);
-      setError(err.message || 'Failed to load status data');
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        console.error(err);
+        setError(err.message);
+      } else {
+        console.error("Unexpected error:", err);
+        setError("Failed to load status data");
+      }
     } finally {
       setLoading(false);
     }
@@ -177,7 +189,7 @@ export default function StatusPage() {
                         <div className="p-3 text-sm text-gray-500">No guests in this category.</div>
                       )}
 
-                      {(guestsByStatus[statusKey] || []).map((g: GuestShort & { gifts?: any[] }) => (
+                      {(guestsByStatus[statusKey] || []).map((g: GuestShort) => (
                         <div key={g.id} className="w-full p-2 rounded bg-white">
                           <div className="flex items-center justify-between">
                             <div className="min-w-0">
@@ -191,7 +203,7 @@ export default function StatusPage() {
                           {g.gifts && g.gifts.length > 0 && (
                             <div className="mt-2 text-sm text-gray-700 bg-yellow-50 p-2 rounded">
                               <div className="font-semibold text-xs">Gift(s):</div>
-                              {g.gifts.map((gift: any) => (
+                              {g.gifts.map((gift) => (
                                 <div key={gift.id} className="text-xs">
                                   {gift.amount ? `₦${gift.amount} ` : ''}{gift.note ? `— ${gift.note}` : ''} <span className="text-gray-400 text-[11px]">({new Date(gift.createdAt).toLocaleString()})</span>
                                 </div>

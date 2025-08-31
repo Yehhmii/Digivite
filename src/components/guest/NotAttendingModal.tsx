@@ -42,9 +42,14 @@ export default function NotAttendingModal({ isOpen, onClose, slug, guestName }: 
       setAmount('');
       setNote('');
       setProvider('');
-    } catch (err: any) {
-      console.error(err);
-      setError(err.message || 'Failed to register gift');
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        console.error(err);
+        setError(err.message || 'Failed to register gift');
+      } else {
+        console.error("Unexpected error:", err);
+        setError("Something went wrong");
+      }
     } finally {
       setSending(false);
     }
@@ -58,7 +63,7 @@ export default function NotAttendingModal({ isOpen, onClose, slug, guestName }: 
       >
         <div className="p-6">
           <div className="flex justify-between items-center mb-6">
-            <h3 className="text-2xl font-serif text-[#1a000d]">We'll Miss You{guestName ? `, ${guestName}` : ''}</h3>
+            <h3 className="text-2xl font-serif text-[#1a000d]">{`We'll Miss You`}{guestName ? `, ${guestName}` : ''}</h3>
             <button onClick={onClose} className="text-amber-600 hover:text-amber-800 text-2xl font-bold" aria-label="Close modal">×</button>
           </div>
           
@@ -67,7 +72,7 @@ export default function NotAttendingModal({ isOpen, onClose, slug, guestName }: 
               <FaRegSadTear className='mx-auto'/>
             </div>
             <p className="text-amber-800 font-serif">
-              We understand you can't make it. You'll be missed at our special day.
+              {`We understand you can't make it. You'll be missed at our special day.`}
             </p>
             
             {/* Gift form */}

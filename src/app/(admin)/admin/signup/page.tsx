@@ -29,8 +29,14 @@ export default function SignupPage() {
       }
 
       router.push('/admin/login');
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        console.error(err);
+        setError(err.message);
+      } else {
+        console.error("Unexpected error:", err);
+        setError("Something went wrong");
+      }
     } finally {
       setLoading(false);
     }

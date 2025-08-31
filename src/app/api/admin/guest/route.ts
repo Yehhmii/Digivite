@@ -1,11 +1,22 @@
-// app/api/admin/guest/route.ts
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { nanoid } from 'nanoid';
 import { cookies } from 'next/headers';
-import { jwtVerify } from 'jose';
+import { jwtVerify, JWTPayload } from 'jose';
+
+interface AdminJWTPayload extends JWTPayload {
+  id?: string;
+  sub?: string;
+}
+
+interface GuestCreateBody {
+  fullName: string;
+  eventId?: string;
+  event?: string;
+}
+
 
 const SECRET =
   process.env.JWT_SECRET || process.env.NEXTAUTH_SECRET || '';
@@ -47,8 +58,8 @@ export async function POST(req: Request) {
         }
         try {
           const { payload } = await jwtVerify(adminToken, new TextEncoder().encode(SECRET));
-          // token payload shape may differ; check where 'id' or 'sub' is stored
-          adminId = (payload as any).id || (payload as any).sub || undefined;
+          const jwtPayload = payload as AdminJWTPayload;
+          adminId = jwtPayload.id || jwtPayload.sub || undefined;
         } catch (err) {
           console.error('[guest.create] adminToken verification failed', err);
           return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -62,7 +73,7 @@ export async function POST(req: Request) {
     }
 
     // parse payload
-    const body = await req.json();
+    const body: GuestCreateBody = await req.json();
     const rawFullName = (body.fullName || '').trim();
     const rawEventInput = (body.eventId || body.event || '') + '';
 

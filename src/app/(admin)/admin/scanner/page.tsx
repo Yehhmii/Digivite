@@ -4,18 +4,32 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import Scanner from '@/components/admin/Scanner';
-import AssignTableModal from '@/components/admin/AssignTableModal'
+import AssignTableModal from '@/components/admin/AssignTableModal';
 
 export default function ScannerPage() {
-  const { data: session, status } = useSession();
+  type Guest = {
+    type: 'guest';
+    fullName: string;
+    email?: string;
+    phone?: string;
+    status: string;
+  };
+
+  type GuestError = {
+    type: 'error';
+    error: string;
+  };
+
+  type GuestResult = Guest | GuestError | null;
+
+  const { status } = useSession();
   const router = useRouter();
 
-  const [selectedGuest, setSelectedGuest] = useState<any | null>(null);
+  const [selectedGuest, setSelectedGuest] = useState<GuestResult>(null);
   const [showAssignModal, setShowAssignModal] = useState(false);
 
   if (status === 'loading') return <div className="p-6">Loading...</div>;
   if (status === 'unauthenticated') {
-    // redirect to admin login if not authenticated
     router.push('/admin/login');
     return null;
   }
@@ -24,18 +38,19 @@ export default function ScannerPage() {
     <div className="min-h-screen p-4 sm:p-6 bg-gray-50">
       <div className="max-w-4xl mx-auto">
         <h1 className="text-2xl font-semibold mb-4">Scan guest to verify</h1>
-        <p className="text-sm text-gray-600 mb-6">Point your camera at the guest QR code. On successful verification the guest details will populate below.</p>
+        <p className="text-sm text-gray-600 mb-6">
+          Point your camera at the guest QR code. On successful verification the guest details will populate below.
+        </p>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Scanner box */}
           <div className="bg-white border rounded p-4">
             <Scanner
-              onResult={(result) => {
-                // result is { ok: boolean, guest?: {...}, message?: string }
+              onResult={(result: { ok: boolean; guest?: Omit<Guest, 'type'>; message?: string }) => {
                 if (result && result.ok && result.guest) {
-                  setSelectedGuest(result.guest);
+                  setSelectedGuest({ type: 'guest', ...result.guest });
                 } else {
-                  setSelectedGuest({ error: result.message || 'Not verified' });
+                  setSelectedGuest({ type: 'error', error: result.message || 'Not verified' });
                 }
               }}
             />
@@ -44,18 +59,33 @@ export default function ScannerPage() {
           {/* Details panel */}
           <div className="bg-white border rounded p-4">
             <h2 className="text-lg font-medium mb-2">Verified guest</h2>
-            {!selectedGuest && <p className="text-sm text-gray-500">No guest scanned yet.</p>}
 
-            {selectedGuest?.error && (
+            {!selectedGuest && (
+              <p className="text-sm text-gray-500">No guest scanned yet.</p>
+            )}
+
+            {selectedGuest?.type === 'error' && (
               <div className="text-red-500">{selectedGuest.error}</div>
             )}
 
-            {selectedGuest && !selectedGuest.error && (
+            {selectedGuest?.type === 'guest' && (
               <div className="space-y-2">
-                <div><span className="font-medium">Name: </span>{selectedGuest.fullName}</div>
-                <div><span className="font-medium">Email: </span>{selectedGuest.email ?? '—'}</div>
-                <div><span className="font-medium">Phone: </span>{selectedGuest.phone ?? '—'}</div>
-                <div><span className="font-medium">Status: </span>{selectedGuest.status}</div>
+                <div>
+                  <span className="font-medium">Name: </span>
+                  {selectedGuest.fullName}
+                </div>
+                <div>
+                  <span className="font-medium">Email: </span>
+                  {selectedGuest.email ?? '—'}
+                </div>
+                <div>
+                  <span className="font-medium">Phone: </span>
+                  {selectedGuest.phone ?? '—'}
+                </div>
+                <div>
+                  <span className="font-medium">Status: </span>
+                  {selectedGuest.status}
+                </div>
 
                 <div className="flex space-x-2 mt-4">
                   <button
@@ -78,12 +108,12 @@ export default function ScannerPage() {
       </div>
 
       {/* Assign table modal */}
-      {showAssignModal && selectedGuest && !selectedGuest.error && (
+      {showAssignModal && selectedGuest?.type === 'guest' && (
         <AssignTableModal
           guest={selectedGuest}
           onClose={() => setShowAssignModal(false)}
           onAssigned={(updatedGuest) => {
-            setSelectedGuest(updatedGuest);
+            setSelectedGuest({ type: 'guest', ...updatedGuest });
           }}
         />
       )}

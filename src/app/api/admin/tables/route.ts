@@ -4,7 +4,12 @@ import prisma from '@/lib/prisma';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { cookies } from 'next/headers';
-import { jwtVerify } from 'jose';
+import { jwtVerify, JWTPayload } from 'jose';
+
+interface AdminJWTPayload extends JWTPayload {
+  id?: string;
+  sub?: string;
+}
 
 const SECRET = process.env.JWT_SECRET || process.env.NEXTAUTH_SECRET || '';
 
@@ -17,7 +22,8 @@ async function verifyAdminId() {
   if (!token) return null;
   try {
     const { payload } = await jwtVerify(token, new TextEncoder().encode(SECRET));
-    return (payload as any).id || (payload as any).sub || null;
+    const jwtPayload = payload as AdminJWTPayload;
+    return jwtPayload.id || jwtPayload.sub || null;
   } catch {
     return null;
   }

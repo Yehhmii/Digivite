@@ -21,7 +21,12 @@ export async function GET() {
     });
 
     return NextResponse.json({ admin });
-  } catch (error) {
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      console.error('Session Error:', error)
+    } else {
+      console.error("Unexpected error:", error);
+    }
     return NextResponse.json({ admin: null });
   }
 }

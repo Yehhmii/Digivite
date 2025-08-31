@@ -97,8 +97,12 @@ export async function POST(req: Request) {
     await sendInvitationEmail(email, eventTitle, guest.fullName ?? null, qrDataUrl);
 
     return NextResponse.json({ ok: true, guest: { id: updated.id, slug: updated.slug } });
-  } catch (err: any) {
-    console.error('rsvp error', err);
-    return NextResponse.json({ error: err?.message ?? 'Server error' }, { status: 500 });
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      console.error('rsvp Error:', err);
+       return NextResponse.json({ error: err.message }, { status: 500 });
+    }
+    console.error("Unexpected error:", err);
+    return NextResponse.json({error: 'Server error' }, { status: 500 });
   }
 }

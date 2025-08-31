@@ -1,12 +1,14 @@
 // app/api/admin/checked-in/route.ts
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
+import { Prisma } from '@prisma/client';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { cookies } from 'next/headers';
-import { jwtVerify } from 'jose';
+import { jwtVerify, JWTPayload } from 'jose';
 
 const SECRET = process.env.JWT_SECRET || process.env.NEXTAUTH_SECRET || '';
+
 
 async function getAdminIdFromReq() {
   const session = await getServerSession(authOptions);
@@ -17,7 +19,8 @@ async function getAdminIdFromReq() {
   if (!token) return null;
   try {
     const { payload } = await jwtVerify(token, new TextEncoder().encode(SECRET));
-    return (payload as any).id || (payload as any).sub || null;
+    const jwtPayload = payload as JWTPayload & { id?: string; sub?: string };
+    return jwtPayload.id || jwtPayload.sub || null;
   } catch (err) {
     console.error('checked-in: adminToken verify failed', err);
     return null;
@@ -57,12 +60,21 @@ export async function GET(req: Request) {
     }
 
     // Build search filter
-    const baseWhere: any = { eventId, checkedIn: true };
+    const baseWhere: Prisma.GuestWhereInput = { eventId, checkedIn: true };
+
     if (q) {
       const qIsNumber = /^\d+$/.test(q);
-      const nameCond = { fullName: { contains: q, mode: 'insensitive' } };
-      const emailCond = { email: { contains: q, mode: 'insensitive' } };
-      const tableCond = qIsNumber ? { table: { number: Number(q) } } : null;
+      const nameCond: Prisma.GuestWhereInput = { 
+        fullName: { contains: q, mode: Prisma.QueryMode.insensitive }
+      };
+
+      const emailCond: Prisma.GuestWhereInput = { 
+        email: { contains: q, mode: Prisma.QueryMode.insensitive }
+      };
+
+      const tableCond: Prisma.GuestWhereInput | null = qIsNumber
+        ? { table: { number: Number(q) } }
+        : null;
 
       if (field === 'name') baseWhere.AND = [{ OR: [nameCond] }];
       else if (field === 'email') baseWhere.AND = [{ OR: [emailCond] }];
@@ -74,7 +86,8 @@ export async function GET(req: Request) {
         baseWhere.AND = [{ OR: [tableCond] }];
       } else {
         // all
-        const ors: any[] = [nameCond, emailCond];
+        const ors: Prisma.GuestWhereInput[] = [nameCond, emailCond];
+
         if (tableCond) ors.push(tableCond);
         baseWhere.AND = [{ OR: ors }];
       }

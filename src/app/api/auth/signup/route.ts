@@ -24,7 +24,12 @@ export async function POST(req: Request) {
         name: admin.name 
       } 
     });
-  } catch (error) {
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      console.error('SignUp Error:', error);
+       return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+    console.error("Unexpected error:", error);
     return NextResponse.json({ error: 'Server error' }, { status: 500 });
   }
 }

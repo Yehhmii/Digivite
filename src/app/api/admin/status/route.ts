@@ -1,10 +1,39 @@
-// app/api/admin/status/route.ts
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
+import type { Prisma } from "@prisma/client";
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { cookies } from 'next/headers';
-import { jwtVerify } from 'jose';
+import { jwtVerify, JWTPayload } from 'jose';
+
+interface AdminJWTPayload extends JWTPayload {
+  id?: string;
+  sub?: string;
+}
+
+type GuestWithRelations = Prisma.GuestGetPayload<{
+  select: {
+    id: true;
+    fullName: true;
+    email: true;
+    phone: true;
+    numberOfGuests: true;
+    table: { select: { number: true } };
+    checkedIn: true;
+    checkInTime: true;
+    status: true;
+    giftSent: true;
+    gifts: {
+      select: {
+        id: true;
+        amount: true;
+        note: true;
+        provider: true;
+        createdAt: true;
+      };
+    };
+  };
+}>;
 
 const SECRET = process.env.JWT_SECRET || process.env.NEXTAUTH_SECRET || '';
 
@@ -17,7 +46,8 @@ async function getAdminIdFromReq() {
   if (!token) return null;
   try {
     const { payload } = await jwtVerify(token, new TextEncoder().encode(SECRET));
-    return (payload as any).id || (payload as any).sub || null;
+    const jwtPayload = payload as AdminJWTPayload;
+    return jwtPayload.id || jwtPayload.sub || null;
   } catch (err) {
     console.error('status: adminToken verify failed', err);
     return null;
@@ -152,7 +182,7 @@ export async function GET(req: Request) {
       })
     ]);
 
-    const mapGuest = (g: any) => ({
+    const mapGuest = (g: GuestWithRelations) => ({
       id: g.id,
       fullName: g.fullName,
       email: g.email,
@@ -163,7 +193,7 @@ export async function GET(req: Request) {
       checkInTime: g.checkInTime,
       status: g.status,
       giftSent: !!g.giftSent,
-      gifts: (g.gifts || []).map((gift: any) => ({
+      gifts: (g.gifts || []).map((gift) => ({
         id: gift.id,
         amount: gift.amount,
         note: gift.note,

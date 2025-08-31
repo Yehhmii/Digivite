@@ -30,7 +30,7 @@ const InvitationCard = () => {
         {/* Fallback content if image doesn't load */}
         <div className="w-full h-96 bg-gradient-to-br from-cream to-amber-50 p-6 hidden flex-col justify-center items-center text-center">
           <div className="space-y-4">
-            <h3 className="text-2xl font-serif text-amber-900 mb-4">You're Invited!</h3>
+            <h3 className="text-2xl font-serif text-amber-900 mb-4">{`You're Invited!`}</h3>
             <div className="w-16 h-0.5 bg-[#D3AF37] mx-auto mb-4"></div>
             <p className="text-amber-800 font-serif leading-relaxed">
               Join us for a special celebration filled with joy, laughter, and unforgettable moments.
@@ -138,7 +138,7 @@ export default function RSVPPageClient({
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-0 group-hover:opacity-20 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-out"></div>
                 <span className="relative flex items-center justify-center gap-2">
                   <span className="text-xl">✓</span>
-                  I'll be there
+                  {`I'll be there`}
                 </span>
               </button>
 
@@ -150,7 +150,7 @@ export default function RSVPPageClient({
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-0 group-hover:opacity-20 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-out"></div>
                 <span className="relative flex items-center justify-center gap-2">
                   <span className="text-xl">✗</span>
-                  Can't make it
+                  {`Can't make it`}
                 </span>
               </button>
             </div>

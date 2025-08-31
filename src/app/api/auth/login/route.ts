@@ -39,14 +39,20 @@ export async function POST(req: Request) {
       path: '/',
     });
 
-    return NextResponse.json({ 
-      admin: { 
-        id: admin.id, 
-        email: admin.email, 
-        name: admin.name 
-      } 
+    return NextResponse.json({
+      admin: {
+        id: admin.id,
+        email: admin.email,
+        name: admin.name
+      }
     });
-  } catch (error) {
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      console.error('Login Error:', error)
+    } else {
+      console.error("Unexpected error:", error);
+    }
     return NextResponse.json({ error: 'Server error' }, { status: 500 });
+
   }
 }

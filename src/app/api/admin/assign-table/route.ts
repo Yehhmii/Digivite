@@ -1,10 +1,9 @@
-// app/api/admin/assign-table/route.ts
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { cookies } from 'next/headers';
-import { jwtVerify } from 'jose';
+import { jwtVerify, JWTPayload } from 'jose';
 
 const SECRET = process.env.JWT_SECRET || process.env.NEXTAUTH_SECRET || '';
 
@@ -19,8 +18,14 @@ export async function POST(req: Request) {
       if (!adminToken) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
       try {
         const { payload } = await jwtVerify(adminToken, new TextEncoder().encode(SECRET));
-        adminId = (payload as any).id || (payload as any).sub;
-      } catch (err) {
+        const jwtPayload = payload as JWTPayload & { id?: string; sub?: string };
+        adminId = jwtPayload.id || jwtPayload.sub;
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          console.error('assign-table error', err.message);
+        } else {
+          console.error('assign-table error', err);
+        }
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
       }
     }
