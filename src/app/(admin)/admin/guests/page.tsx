@@ -50,8 +50,14 @@ export default function CreateGuestPage() {
       setSuccess(`Guest created successfully!`);
       setGeneratedSlug(guest.slug);
       setFullName('');
-    } catch (err: any) {
-      setError(err.message || 'Something went wrong');
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        console.error(err);
+        setError(err.message);
+      } else {
+        console.error("Unexpected error:", err);
+        setError("Something went wrong");
+      }
     } finally {
       setLoading(false);
     }
@@ -85,7 +91,7 @@ export default function CreateGuestPage() {
   return (
     <div className="p-6 max-w-md mx-auto">
       <h1 className="text-2xl font-bold mb-6">Create New Guest</h1>
-      <h3 className="text-lg mb-4">Event: M'J Forever25</h3>
+      <h3 className="text-lg mb-4">Event: M-J Forever25</h3>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
@@ -151,8 +157,8 @@ export default function CreateGuestPage() {
       <div className="mt-8">
         <h2 className="text-xl font-semibold mb-2">How it works</h2>
         <ol className="list-decimal pl-5 space-y-2">
-          <li>Enter guest's full name</li>
-          <li>Click "Create Guest"</li>
+          <li>{`Enter guest's full name`}</li>
+          <li>{`Click "Create Guest"`}</li>
           <li>Copy the generated slug or open the invitation link</li>
           <li>Use the slug in your invitation URL: /guest/[slug]</li>
         </ol>

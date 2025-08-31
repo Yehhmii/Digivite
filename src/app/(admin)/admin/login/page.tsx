@@ -28,8 +28,14 @@ export default function LoginPage() {
       }
 
       router.push('/admin/dashboard');
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        console.error(err);
+        setError(err.message);
+      } else {
+        console.error("Unexpected error:", err);
+        setError("Something went wrong");
+      }
     } finally {
       setLoading(false);
     }
@@ -117,7 +123,7 @@ export default function LoginPage() {
               href="/admin/signup" 
               className="text-sm font-medium text-indigo-600 hover:text-indigo-500 transition-colors duration-200"
             >
-              Don't have an account? Create one
+              {`Don't have an account? Create one`}
             </Link>
           </div>
         </div>

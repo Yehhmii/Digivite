@@ -17,15 +17,17 @@ export type Guest = {
   tableId?: string | null;
 };
 
+type SearchField = "all" | "name" | "email" | "table";
+
 export default function CheckedInPage() {
-  const { data: session, status } = useSession();
+  const { status } = useSession();
   const router = useRouter();
 
   const [guests, setGuests] = useState<Guest[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [query, setQuery] = useState('');
-  const [field, setField] = useState<'all' | 'name' | 'email' | 'table'>('all');
+  const [field, setField] = useState<SearchField>("all");
   const [page, setPage] = useState(1);
   const [limit] = useState(50);
   const [total, setTotal] = useState(0);
@@ -73,9 +75,14 @@ export default function CheckedInPage() {
       const data = await res.json();
       setGuests(data.guests || []);
       setTotal(data.total || 0);
-    } catch (err: any) {
-      console.error(err);
-      setError(err.message || 'Failed to load guests');
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        console.error(err);
+        setError(err.message);
+      } else {
+        console.error("Unexpected error:", err);
+        setError("Failed to load guests");
+      }
       setGuests([]);
       setTotal(0);
     } finally {
@@ -101,7 +108,9 @@ return (
               <div className="flex flex-col sm:flex-row sm:items-center sm:gap-3 gap-2">
                 <select
                   value={field}
-                  onChange={(e) => setField(e.target.value as any)}
+                  onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+                    setField(e.target.value as SearchField)
+                  }
                   className="w-full sm:w-40 p-2 border rounded bg-white text-sm"
                   aria-label="Search field"
                 >
