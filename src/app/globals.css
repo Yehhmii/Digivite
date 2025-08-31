@@ -1,26 +1,136 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+:root{
+  --color-primary: #722F37;
+  --color-accent:  #D3AF37;
+  --bg: #fff;
+  --muted: #6b6b6b;
+
+  --font-royal: 'Playfair Display', serif;
+  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* Basic resets */
+*{box-sizing:border-box}
+html,body,#__next{height:100%}
+body{
+  margin:0;
+  background: var(--bg);
+  color: #111;
+  font-family: var(--font-inter), sans-serif;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  -webkit-text-size-adjust:100%;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* Typography */
+.h1-royal {
+  font-family: var(--font-playfair), serif;
+  color: var(--color-primary);
+  font-weight: 700;
+  letter-spacing: 0.4px;
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Container helpers */
+.page-center {
+  min-height: 100dvh; /* mobile-first full viewport */
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  align-items: center;
+  justify-content: center;
+  padding: 28px 20px;
+}
+
+/* Envelope container + float animation */
+.envelope-wrap {
+  width: 220px;
+  height: 160px;
+  display: grid;
+  place-items: center;
+  position: relative;
+  margin: 8px 0 6px;
+  filter: drop-shadow(0 10px 20px rgba(0,0,0,0.12));
+  transform-origin: center;
+  animation: float 3.5s ease-in-out infinite;
+}
+
+/* subtle float */
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}
+
+/* Envelope svg sizing */
+.envelope-svg { width: 100%; height: 100%; display:block; }
+
+/* flap shine animation (small tilt) */
+.envelope-flap {
+  transform-origin: 50% 20%;
+  transition: transform 320ms ease;
+}
+
+/* on hover (desktop) slightly tilt the flap */
+.envelope-wrap:hover .envelope-flap {
+  transform: rotateX(8deg) rotateZ(-2deg);
+}
+
+/* shadow bubble behind envelope */
+.envelope-shadow {
+  position: absolute;
+  inset: auto 18px 10px 18px;
+  height: 22px;
+  border-radius: 999px;
+  background: radial-gradient(closest-side, rgba(0,0,0,0.12), rgba(0,0,0,0.06));
+  filter: blur(8px);
+  z-index: -1;
+  width: calc(100% - 36px);
+}
+
+/* elegant paragraph */
+.invite-sub {
+  font-family: var(--font-royal);
+  color: var(--muted);
+  font-size: 14px;
+  text-align: center;
+  margin-top: 2px;
+  line-height: 1.4;
+}
+
+/* Primary button */
+.btn-primary {
+  background: linear-gradient(90deg, var(--color-primary), var(--color-primary));
+  color: white;
+  border-radius: 999px;
+  padding: 12px 18px;
+  font-weight: 600;
+  font-family: var(--font-sans);
+  border: none;
+  display: inline-flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 18px rgba(114,47,55,0.18);
+  transition: transform 160ms ease, box-shadow 160ms ease, opacity 160ms;
+  cursor: pointer;
+}
+
+/* accent outline for gold */
+.btn-primary .accent {
+  background: var(--color-accent);
+  height: 8px;
+  width: 8px;
+  border-radius: 50%;
+  box-shadow: 0 0 8px rgba(211,175,55,0.5);
+}
+
+/* tap effect */
+.btn-primary:active { transform: translateY(2px) scale(.995); }
+
+/* Responsive tweaks */
+@media (min-width: 768px) {
+  .envelope-wrap { width: 360px; height: 260px; }
+  .page-center { padding: 48px; gap: 26px; }
+  .h1-royal { font-size: 34px; }
 }

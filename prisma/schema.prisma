@@ -1,0 +1,99 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+// Events
+model Event {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  slug      String   @unique
+  title     String
+  date      DateTime
+  venue     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  guests Guest[] // relation: Guest.event -> Event.guests
+  tables Table[] // relation: Table.event -> Event.tables
+  gifts  Gift[] // <-- ADDED: relation: Gift.event -> Event.gifts
+
+  adminId String? @db.ObjectId
+  admin   Admin?  @relation(fields: [adminId], references: [id])
+}
+
+// Guests
+model Guest {
+  id      String @id @default(auto()) @map("_id") @db.ObjectId
+  eventId String @db.ObjectId
+  event   Event  @relation(fields: [eventId], references: [id])
+
+  fullName       String
+  email          String?
+  phone          String?
+  status         RSVPStatus @default(PENDING)
+  numberOfGuests Int        @default(1)
+  qrCodeToken    String     @unique
+  slug           String?    @unique
+  checkedIn      Boolean    @default(false)
+  checkInTime    DateTime?
+
+  tableId String? @db.ObjectId
+  table   Table?  @relation(fields: [tableId], references: [id])
+
+  giftSent  Boolean  @default(false)
+  gifts     Gift[] // <-- ADDED: relation: Gift.guest -> Guest.gifts (guest may send multiple gifts)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Tables
+model Table {
+  id      String @id @default(auto()) @map("_id") @db.ObjectId
+  eventId String @db.ObjectId
+  event   Event  @relation(fields: [eventId], references: [id])
+
+  number   Int
+  capacity Int
+  guests   Guest[] // relation back to Guest
+
+  createdAt DateTime @default(now())
+}
+
+// Admins
+model Admin {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  email     String   @unique
+  name      String?
+  password     String   @default("")
+  salt         String?  // For password hashing
+  resetToken   String?
+  resetExpires DateTime?
+  events    Event[]
+  createdAt DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+// Gifts
+model Gift {
+  id      String @id @default(auto()) @map("_id") @db.ObjectId
+  eventId String @db.ObjectId
+  event   Event  @relation(fields: [eventId], references: [id])
+
+  guestId String? @db.ObjectId
+  guest   Guest?  @relation(fields: [guestId], references: [id])
+
+  amount    Float?
+  note      String?
+  provider  String?
+  createdAt DateTime @default(now())
+}
+
+enum RSVPStatus {
+  PENDING
+  ACCEPTED
+  DECLINED
+}
