@@ -1,5 +1,7 @@
 "use client";
 
+export const dynamic = "force-dynamic";
+
 import React from 'react'
 import Link  from 'next/link'
 import { FaUserCheck } from 'react-icons/fa'
