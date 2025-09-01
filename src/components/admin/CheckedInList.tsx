@@ -2,7 +2,7 @@
 'use client';
 
 import React from 'react';
-import type { Guest } from '../../app/(admin)/admin/checkedIn/page'; // optional type file
+import type { Guest } from '../../app/admin/checkedIn/page'; // optional type file
 
 export default function CheckedInList({
   guests,
