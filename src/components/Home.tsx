@@ -358,17 +358,19 @@ export default function DigitalInviteLanding() {
 
           {/* Crime Scene Tape Lines */}
           <div className="absolute inset-0 pointer-events-none overflow-hidden">
-            <div className="absolute top-1/4 -left-20 w-full h-16 bg-white border-t-4 border-b-4 border-black transform rotate-12 shadow-lg">
+            <div className="absolute top-1/4 -left-20 w-full h-16 bg-[#eee] border-t-4 border-b-4 border-black transform rotate-12 shadow-lg">
               <div className="flex items-center h-full overflow-hidden">
                 <div className="animate-pulse text-black font-bold text-lg tracking-wider whitespace-nowrap">
                   DIGIVITE • DIGIVITE • DIGIVITE • DIGIVITE • DIGIVITE • DIGIVITE • DIGIVITE • DIGIVITE • DIGIVITE • DIGIVITE • DIGIVITE • DIGIVITE • 
                 </div>
+                {/* <div className="absolute inset-0 bg-black/75"></div> */}
+
               </div>
             </div>
             
-            <div className="absolute bottom-1/3 -right-20 w-full h-16 bg-yellow-300 border-t-4 border-b-4 border-black transform -rotate-12 shadow-lg">
+            <div className="absolute bottom-1/3 -right-20 w-full h-16 bg-black border-t-4 border-b-4 border-[#eee] transform -rotate-12 shadow-lg">
               <div className="flex items-center h-full overflow-hidden">
-                <div className="animate-pulse text-black font-bold text-lg tracking-wider whitespace-nowrap">
+                <div className="animate-pulse text-[#e0e0e0] font-bold text-lg tracking-wider whitespace-nowrap">
                   DIGIVITE • DIGIVITE • DIGIVITE • DIGIVITE • DIGIVITE • DIGIVITE • DIGIVITE • DIGIVITE • DIGIVITE • DIGIVITE • DIGIVITE • DIGIVITE • 
                 </div>
               </div>
@@ -452,14 +454,17 @@ export default function DigitalInviteLanding() {
               backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23000000' fill-opacity='0.1'%3E%3Ccircle cx='7' cy='7' r='1'/%3E%3Ccircle cx='53' cy='7' r='1'/%3E%3Ccircle cx='7' cy='53' r='1'/%3E%3Ccircle cx='53' cy='53' r='1'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
             }}></div>
           </div>
+          <div className="absolute inset-0 bg-black/75"></div>
 
           {/* Crime Scene Tape Lines */}
           <div className="absolute inset-0 pointer-events-none overflow-hidden">
             <div className="absolute top-1/4 -left-20 w-full h-16 bg-yellow-300 border-t-4 border-b-4 border-black transform rotate-12 shadow-lg">
               <div className="flex items-center h-full overflow-hidden">
-                <div className="animate-pulse text-black font-bold text-lg tracking-wider whitespace-nowrap">
+                <div className="animate-pulse text-white font-bold text-lg tracking-wider whitespace-nowrap z-30">
                   DIGIVITE • DIGIVITE • DIGIVITE • DIGIVITE • DIGIVITE • DIGIVITE • DIGIVITE • DIGIVITE • DIGIVITE • DIGIVITE • DIGIVITE • DIGIVITE • 
                 </div>
+                <div className="absolute inset-0 bg-black/75"></div>
+
               </div>
             </div>
             
@@ -468,6 +473,8 @@ export default function DigitalInviteLanding() {
                 <div className="animate-pulse text-black font-bold text-lg tracking-wider whitespace-nowrap">
                   DIGIVITE • DIGIVITE • DIGIVITE • DIGIVITE • DIGIVITE • DIGIVITE • DIGIVITE • DIGIVITE • DIGIVITE • DIGIVITE • DIGIVITE • DIGIVITE • 
                 </div>
+                <div className="absolute inset-0 bg-black/75"></div>
+
               </div>
             </div>
           </div>
@@ -494,10 +501,10 @@ export default function DigitalInviteLanding() {
           {/* Content */}
           <div className="relative z-10 max-w-6xl mx-auto px-4">
             <div className={`text-center mb-16 ${contactInView ? 'animate__animated animate__fadeInDown' : 'opacity-0'}`}>
-              <h2 className="text-4xl md:text-5xl font-dm-serif text-black mb-6">
+              <h2 className="text-4xl md:text-5xl font-dm-serif text-white mb-6">
                 Let's Work Together
               </h2>
-              <p className="font-playfair text-black/70 text-xl max-w-2xl mx-auto leading-relaxed">
+              <p className="font-playfair text-white/70 text-xl max-w-2xl mx-auto leading-relaxed">
                 Ready to create something beautiful? Get in touch and let's discuss your project.
               </p>
             </div>
@@ -505,7 +512,7 @@ export default function DigitalInviteLanding() {
             <div className="grid md:grid-cols-2 gap-12 items-start">
               {/* Contact Info - Animate from Left */}
               <div className={`space-y-8 ${contactInView ? 'animate__animated animate__fadeInLeft animate__delay-1s' : 'opacity-0'}`}>
-                <h3 className="text-2xl font-dm-serif text-black mb-8 border-b-2 border-black pb-2">
+                <h3 className="text-2xl font-dm-serif text-white mb-8 border-b-2 border-black pb-2">
                   Contact Information
                 </h3>
                 
