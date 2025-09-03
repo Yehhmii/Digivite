@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { Playfair_Display, Inter } from 'next/font/google';
+import { Playfair_Display, DM_Serif_Display } from 'next/font/google';
 
 const playfair = Playfair_Display({
   weight: ['400', '600', '700'],
@@ -8,10 +8,11 @@ const playfair = Playfair_Display({
   variable: '--font-playfair',
 });
 
-const inter = Inter({
-  weight: ['300', '400', '600'],
+const dmSerif = DM_Serif_Display({
+  weight: ['400'],
+  style: ['normal', 'italic'],
   subsets: ['latin'],
-  variable: '--font-inter',
+  variable: '--font-dm-serif',
 });
 
 export const metadata: Metadata = {
@@ -27,7 +28,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${playfair.variable} ${inter.variable}`}
+        className={`${playfair.variable} ${dmSerif.variable}`}
       >
         {children}
       </body>

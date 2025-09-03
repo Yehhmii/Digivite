@@ -23,6 +23,22 @@ body{
   -webkit-text-size-adjust:100%;
 }
 
+*, *::before, *::after {
+  box-sizing: inherit;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+.font-playfair {
+  font-family: var(--font-playfair);
+}
+
+.font-dm-serif {
+  font-family: var(--font-dm-serif);
+}
+
 /* Typography */
 .h1-royal {
   font-family: var(--font-playfair), serif;
@@ -127,6 +143,53 @@ body{
 
 /* tap effect */
 .btn-primary:active { transform: translateY(2px) scale(.995); }
+
+.message-card {
+  background: linear-gradient(135deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
+  border: 1px solid rgba(255,255,255,0.06);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  color: #fff;
+  max-width: 760px; /* responsive cap */
+  margin: 0 auto;
+  position: relative;
+  overflow: visible;
+  /* clip-path as % so it scales on smaller screens */
+  clip-path: polygon(
+    0% 0%,
+    100% 0%,
+    100% 78%,
+    62% 78%,
+    50% 100%,
+    38% 78%,
+    0% 78%
+  );
+}
+
+/* pointer wrapper is positioned immediately below the clipped card */
+.pointer-wrap {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: -10px; /* brings pointer up into the clip */
+  pointer-events: none;
+}
+
+.pointer {
+  width: 22px;
+  height: 22px;
+  transform: rotate(45deg);
+  background: linear-gradient(135deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
+  border-left: 1px solid rgba(255,255,255,0.06);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.45);
+}
+
+/* small adjustments for mobile */
+@media (max-width: 640px) {
+  .message-card { clip-path: polygon(0 0,100% 0,100% 82%,60% 82%,50% 100%,40% 82%,0 82%); }
+  .pointer { width: 18px; height: 18px; }
+}
 
 /* Responsive tweaks */
 @media (min-width: 768px) {

@@ -5,7 +5,7 @@ import { FaRegSadTear } from "react-icons/fa";
 interface NotAttendingModalProps {
   isOpen: boolean;
   onClose: () => void;
-  slug: string; // new
+  slug: string;
   guestName?: string | null;
 }
 
@@ -38,7 +38,6 @@ export default function NotAttendingModal({ isOpen, onClose, slug, guestName }: 
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Failed to register gift');
       setSuccess('Thanks — your gift has been recorded.');
-      // optionally clear form
       setAmount('');
       setNote('');
       setProvider('');
@@ -56,69 +55,193 @@ export default function NotAttendingModal({ isOpen, onClose, slug, guestName }: 
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 animate__animated animate__fadeIn">
+    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate__animated animate__fadeIn">
       <div 
         ref={modalRef}
-        className="bg-white rounded-2xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto animate__animated animate__zoomIn"
+        className="bg-gradient-to-br overflow-y-auto  px-9 from-black/90 to-[#722F37]/20 backdrop-blur-md border border-[#722F37]/40 rounded-xl shadow-2xl w-full max-w-md max-h-[95vh] sm:max-h-[90vh] overflow-hidden animate__animated animate__zoomIn modal-luxury"
       >
-        <div className="p-6">
-          <div className="flex justify-between items-center mb-6">
-            <h3 className="text-2xl font-serif text-[#1a000d]">{`We'll Miss You`}{guestName ? `, ${guestName}` : ''}</h3>
-            <button onClick={onClose} className="text-amber-600 hover:text-amber-800 text-2xl font-bold" aria-label="Close modal">×</button>
-          </div>
-          
-          <div className="text-center space-y-4">
-            <div className="text-6xl mb-4 text-amber-800">
-              <FaRegSadTear className='mx-auto'/>
+        {/* Scrollable content container */}
+        <div className="">
+          <div className="p-4 sm:p-6 lg:p-8">
+            {/* Header */}
+            <div className="flex justify-between items-start mb-6 sm:mb-8">
+              <h3 className="text-xl sm:text-2xl lg:text-3xl font-playfair text-[#722F37] font-light leading-tight flex-1 pr-4">
+                We'll Miss You{guestName ? `, ${guestName}` : ''}
+              </h3>
+              <button 
+                onClick={onClose} 
+                className="text-[#722F37] hover:text-white text-2xl sm:text-3xl font-light transition-colors duration-300 flex-shrink-0" 
+                aria-label="Close modal"
+              >
+                ×
+              </button>
             </div>
-            <p className="text-amber-800 font-serif">
-              {`We understand you can't make it. You'll be missed at our special day.`}
-            </p>
             
-            {/* Gift form */}
-            <div className="space-y-4 pt-4 text-left">
-              <label className="block text-[#1a000d] font-serif text-sm mb-1">Would you like to send a gift?</label>
-              <div className="grid grid-cols-1 gap-3">
-                <input
-                  type="number"
-                  placeholder="Amount (optional)"
-                  value={amount}
-                  onChange={(e) => setAmount(e.target.value)}
-                  className="w-full p-3 border border-amber-300 rounded-lg font-serif focus:outline-none focus:ring-2 focus:ring-[#D3AF37]"
-                />
-                <input
-                  type="text"
-                  placeholder="Provider (e.g. bank or mobile wallet)"
-                  value={provider}
-                  onChange={(e) => setProvider(e.target.value)}
-                  className="w-full p-3 border border-amber-300 rounded-lg font-serif focus:outline-none focus:ring-2 focus:ring-[#D3AF37]"
-                />
-                <div className='w-full p-3 border border-amber-300 rounded-lg font-serif focus:outline-none focus:ring-2 focus:ring-[#D3AF37] resize-non'>
-                      <ul>
-                        <li>Account Number: <span className='text-amber-800'>2037620118</span></li>
-                        <li>Account Name: <span className='text-amber-800'>Olajide Silva</span></li>
-                        <li>Account Bank: <span className='text-amber-800'>Kuda Bank</span></li>
-                      </ul>
+            <div className="text-center space-y-4 sm:space-y-6">
+              {/* Icon */}
+              <div className="text-3xl sm:text-4xl lg:text-5xl mb-4 sm:mb-6 text-[#722F37]">
+                <FaRegSadTear className='mx-auto'/>
+              </div>
+              
+              {/* Message */}
+              <p className="text-white/90 font-dm-serif leading-relaxed text-sm sm:text-base">
+                We understand you can't make it. You'll be missed at our special day.
+              </p>
+              
+              {/* Gift form */}
+              <div className="space-y-4 sm:space-y-6 pt-4 sm:pt-6 text-left">
+                <h4 className="text-center text-[#D4AF37] font-playfair text-base sm:text-lg font-light mb-3 sm:mb-4">
+                  Would you like to send a gift?
+                </h4>
+                
+                <div className="space-y-3 sm:space-y-4">
+                  {/* Amount Input */}
+                  <div>
+                    <label className="block text-[#D4AF37] font-dm-serif text-xs sm:text-sm mb-2 tracking-wide">
+                      Amount (optional)
+                    </label>
+                    <input
+                      type="number"
+                      placeholder="Enter amount"
+                      value={amount}
+                      onChange={(e) => setAmount(e.target.value)}
+                      className="w-full p-3 sm:p-4 bg-[#1a1a1a] border-2 border-[#722F37]/30 rounded-none font-dm-serif text-white placeholder-white/50 focus:outline-none focus:border-[#722F37] transition-all duration-300 newspaper-input text-sm sm:text-base"
+                    />
+                  </div>
+                  
+                  {/* Provider Input */}
+                  <div>
+                    <label className="block text-[#D4AF37] font-dm-serif text-xs sm:text-sm mb-2 tracking-wide">
+                      Provider
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="e.g. bank or mobile wallet"
+                      value={provider}
+                      onChange={(e) => setProvider(e.target.value)}
+                      className="w-full p-3 sm:p-4 bg-[#1a1a1a] border-2 border-[#722F37]/30 rounded-none font-dm-serif text-white placeholder-white/50 focus:outline-none focus:border-[#722F37] transition-all duration-300 newspaper-input text-sm sm:text-base"
+                    />
+                  </div>
+                  
+                  {/* Account Details Display */}
+                  <div className='w-full p-3 sm:p-4 bg-gradient-to-br from-[#1a1a1a] to-[#0d0d0d] border-2 border-[#D4AF37]/30 rounded-none font-dm-serif text-white newspaper-display'>
+                    <h5 className="text-[#D4AF37] font-semibold mb-2 sm:mb-3 text-xs sm:text-sm tracking-wider">
+                      ACCOUNT DETAILS
+                    </h5>
+                    <div className="space-y-1 sm:space-y-2 text-xs sm:text-sm">
+                      <div className="flex justify-between items-center border-b border-[#D4AF37]/20 pb-1">
+                        <span className="text-white/70">Account Number:</span>
+                        <span className="text-[#D4AF37] font-mono break-all">2037620118</span>
+                      </div>
+                      <div className="flex justify-between items-center border-b border-[#D4AF37]/20 pb-1">
+                        <span className="text-white/70">Account Name:</span>
+                        <span className="text-[#D4AF37] break-words">Olajide Silva</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-white/70">Account Bank:</span>
+                        <span className="text-[#D4AF37] break-words">Kuda Bank</span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            {error && <div className="text-sm text-red-600">{error}</div>}
-            {success && <div className="text-sm text-green-600">{success}</div>}
+              {/* Error/Success Messages */}
+              {error && (
+                <div className="text-xs sm:text-sm text-red-400 font-dm-serif bg-red-900/20 p-2 sm:p-3 rounded border border-red-500/30 break-words">
+                  {error}
+                </div>
+              )}
+              {success && (
+                <div className="text-xs sm:text-sm text-green-400 font-dm-serif bg-green-900/20 p-2 sm:p-3 rounded border border-green-500/30 break-words">
+                  {success}
+                </div>
+              )}
 
-            <div className="pt-4 flex gap-3 justify-center">
-              <button onClick={onClose} className="bg-gray-200 hover:bg-gray-300 text-amber-800 px-6 py-3 rounded-full font-serif transition-colors duration-300">Cancel</button>
-              <button
-                onClick={handleConfirmSending}
-                className="bg-amber-600 hover:bg-amber-700 text-white px-6 py-3 rounded-full font-serif transition-colors duration-300 disabled:opacity-60"
-                disabled={sending}
-              >
-                {sending ? 'Saving...' : 'Confirm Sending'}
-              </button>
+              {/* Action Buttons */}
+              <div className="pt-4 sm:pt-6 flex flex-row sm:flex-row gap-3 sm:gap-4 justify-center">
+                <button 
+                  onClick={onClose} 
+                  className="luxury-button-secondary w-[50%] sm:w-auto px-6 sm:px-8 py-2 sm:py-3 bg-transparent border-2 border-white/30 text-white/80 font-dm-serif text-xs sm:text-sm tracking-[0.1em] uppercase transition-all duration-500 hover:text-white hover:border-white/60"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleConfirmSending}
+                  className="luxury-button-primary w-[50%] sm:w-auto px-6 sm:px-8 py-2 sm:py-3 bg-transparent border-2 border-[#722F37] text-[#722F37] font-dm-serif text-xs sm:text-sm tracking-[0.1em] uppercase transition-all duration-500 hover:text-white disabled:opacity-50 overflow-hidden relative group"
+                  disabled={sending}
+                >
+                  <div className="absolute inset-0 bg-[#722F37] transform -translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-in-out"></div>
+                  <span className="relative z-10">
+                    {sending ? 'Saving...' : 'Confirm Sending'}
+                  </span>
+                </button>
+              </div>
             </div>
           </div>
         </div>
       </div>
+
+      {/* Custom Styles */}
+      <style jsx>{`
+        .modal-luxury {
+          box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 100px rgba(114, 47, 55, 0.1);
+        }
+        
+        .newspaper-input {
+          background: linear-gradient(145deg, #1a1a1a, #0d0d0d);
+          box-shadow: inset 2px 2px 5px rgba(0,0,0,0.5), inset -2px -2px 5px rgba(255,255,255,0.02);
+          font-family: 'Times New Roman', serif;
+          letter-spacing: 0.5px;
+          border-style: solid;
+          background-image: 
+            linear-gradient(transparent 0px, transparent 24px, rgba(114, 47, 55, 0.1) 25px, rgba(114, 47, 55, 0.1) 26px, transparent 27px),
+            linear-gradient(90deg, rgba(114, 47, 55, 0.05) 0px, transparent 1px);
+          background-size: 100% 27px, 27px 100%;
+        }
+        
+        .newspaper-input:focus {
+          background-image: 
+            linear-gradient(transparent 0px, transparent 24px, rgba(114, 47, 55, 0.2) 25px, rgba(114, 47, 55, 0.2) 26px, transparent 27px),
+            linear-gradient(90deg, rgba(114, 47, 55, 0.1) 0px, transparent 1px);
+          box-shadow: inset 2px 2px 8px rgba(0,0,0,0.6), inset -2px -2px 8px rgba(114, 47, 55, 0.05), 0 0 20px rgba(114, 47, 55, 0.1);
+        }
+        
+        .newspaper-display {
+          background-image: 
+            linear-gradient(transparent 0px, transparent 19px, rgba(212, 175, 55, 0.1) 20px, rgba(212, 175, 55, 0.1) 21px, transparent 22px),
+            linear-gradient(90deg, rgba(212, 175, 55, 0.05) 0px, transparent 1px);
+          background-size: 100% 22px, 22px 100%;
+          box-shadow: inset 2px 2px 8px rgba(0,0,0,0.4), inset -2px -2px 8px rgba(212, 175, 55, 0.02);
+        }
+        
+        .luxury-button-primary:hover .absolute {
+          transform: translateX(0);
+        }
+        
+        .luxury-button-secondary:hover {
+          background: rgba(255, 255, 255, 0.05);
+        }
+
+        /* Responsive typography adjustments */
+        @media (max-width: 640px) {
+          .newspaper-input, .newspaper-display {
+            background-size: 100% 22px, 22px 100%;
+          }
+          
+          .newspaper-input {
+            background-image: 
+              linear-gradient(transparent 0px, transparent 19px, rgba(114, 47, 55, 0.1) 20px, rgba(114, 47, 55, 0.1) 21px, transparent 22px),
+              linear-gradient(90deg, rgba(114, 47, 55, 0.05) 0px, transparent 1px);
+          }
+          
+          .newspaper-input:focus {
+            background-image: 
+              linear-gradient(transparent 0px, transparent 19px, rgba(114, 47, 55, 0.2) 20px, rgba(114, 47, 55, 0.2) 21px, transparent 22px),
+              linear-gradient(90deg, rgba(114, 47, 55, 0.1) 0px, transparent 1px);
+          }
+        }
+      `}</style>
     </div>
   );
 }
