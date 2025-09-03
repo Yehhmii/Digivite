@@ -84,26 +84,44 @@ export default function DigitalInviteLanding() {
   const contactRef = useRef(null);
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
+    // debug helper - remove in production if you want
+    const debug = (entry: IntersectionObserverEntry) => {
+      // eslint-disable-next-line no-console
+      console.log('[IO]', entry.target.id, 'isIntersecting:', entry.isIntersecting, 'ratio:', entry.intersectionRatio, 'boundingTop:', entry.boundingClientRect.top);
+    };
+
+    // If your header is fixed, set a negative top rootMargin equal to header height.
+    // Adjust -80px to match your nav height on mobile/desktop.
+    const headerHeight = 80; // tweak if your nav height differs
+    const io = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.target.id === 'portfolio' && entry.isIntersecting) {
+          // debug logging (comment out in production)
+          debug(entry);
+
+          // Use intersectionRatio instead of only isIntersecting to be more robust
+          if (entry.target.id === 'portfolio' && entry.intersectionRatio >= 0.12) {
             setPortfolioInView(true);
           }
-          if (entry.target.id === 'contact' && entry.isIntersecting) {
+          if (entry.target.id === 'contact' && entry.intersectionRatio >= 0.12) {
             setContactInView(true);
           }
         });
       },
       {
-        threshold: 0.3
+        root: null, // viewport
+        rootMargin: `-${headerHeight}px 0px -40px 0px`, // top margin accounts for fixed nav; bottom slightly reduced
+        threshold: [0, 0.08, 0.12, 0.3], // check a few thresholds
       }
     );
 
-    if (portfolioRef.current) observer.observe(portfolioRef.current);
-    if (contactRef.current) observer.observe(contactRef.current);
+    // only observe when elements exist
+    if (portfolioRef.current) io.observe(portfolioRef.current);
+    if (contactRef.current) io.observe(contactRef.current);
 
-    return () => observer.disconnect();
+    return () => {
+      io.disconnect();
+    };
   }, []);
 
   return (
@@ -564,7 +582,7 @@ export default function DigitalInviteLanding() {
                       </label>
                       <input 
                         type="text" 
-                        className="w-full px-4 py-3 border-2 border-black/20 rounded-none focus:outline-none focus:border-black bg-gray-50 font-playfair"
+                        className="w-[90%] px-4 py-3 border-2 border-black/20 rounded-none focus:outline-none focus:border-black bg-gray-50 font-playfair"
                       />
                     </div>
                     
@@ -574,7 +592,7 @@ export default function DigitalInviteLanding() {
                       </label>
                       <input 
                         type="email" 
-                        className="w-full px-4 py-3 border-2 border-black/20 rounded-none focus:outline-none focus:border-black bg-gray-50 font-playfair"
+                        className="w-[90%] px-4 py-3 border-2 border-black/20 rounded-none focus:outline-none focus:border-black bg-gray-50 font-playfair"
                       />
                     </div>
                     
@@ -582,7 +600,7 @@ export default function DigitalInviteLanding() {
                       <label className="font-playfair text-black/80 text-sm uppercase tracking-wider block mb-1">
                         Service Type
                       </label>
-                      <select className="w-full px-4 py-3 border-2 border-black/20 rounded-none focus:outline-none focus:border-black bg-gray-50 font-playfair">
+                      <select className="w-[90%] px-4 py-3 border-2 border-black/20 rounded-none focus:outline-none focus:border-black bg-gray-50 font-playfair">
                         <option>Select Service</option>
                         <option>Wedding Invitation</option>
                         <option>Event Invitation</option>
@@ -597,7 +615,7 @@ export default function DigitalInviteLanding() {
                       </label>
                       <textarea 
                         rows={4}
-                        className="w-full px-4 py-3 border-2 border-black/20 rounded-none focus:outline-none focus:border-black bg-gray-50 font-playfair"
+                        className="w-[90%] px-4 py-3 border-2 border-black/20 rounded-none focus:outline-none focus:border-black bg-gray-50 font-playfair"
                         placeholder="Tell us about your project..."
                       ></textarea>
                     </div>
