@@ -12,7 +12,7 @@ export default function AttendanceModal({ isOpen, onClose, slug }: AttendanceMod
   const modalRef = useRef<HTMLDivElement>(null);
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
-  const [numberOfGuests, setNumberOfGuests] = useState(1);
+  // const [numberOfGuests, setNumberOfGuests] = useState(1);
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -35,7 +35,7 @@ export default function AttendanceModal({ isOpen, onClose, slug }: AttendanceMod
           slug,
           email,
           phone,
-          numberOfGuests,
+          // numberOfGuests,
         }),
       });
 
@@ -127,7 +127,7 @@ export default function AttendanceModal({ isOpen, onClose, slug }: AttendanceMod
                   </div>
 
                   {/* Number of Guests */}
-                  <div>
+                  {/* <div>
                     <label className="block text-[#D4AF37] font-dm-serif text-xs sm:text-sm mb-2 tracking-wide">
                       Number of Guests (including you)
                     </label>
@@ -141,7 +141,7 @@ export default function AttendanceModal({ isOpen, onClose, slug }: AttendanceMod
                       <option value={3}>3</option>
                       <option value={4}>4</option>
                     </select>
-                  </div>
+                  </div> */}
 
                   {/* Error Message */}
                   {error && (

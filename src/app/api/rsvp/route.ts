@@ -20,7 +20,7 @@ async function sendInvitationEmail(to: string, eventTitle: string, guestName: st
   const transporter = nodemailer.createTransport({
     host: process.env.SMTP_HOST,
     port: Number(process.env.SMTP_PORT || 587),
-    secure: true, // true for 465, false for other ports
+    secure: false, // true for 465, false for other ports
     // requireTLS: true, // forces TLS
     auth: {
       user: process.env.SMTP_USER,

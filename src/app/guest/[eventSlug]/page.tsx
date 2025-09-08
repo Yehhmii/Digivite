@@ -80,8 +80,8 @@ export default async function GuestLandingPage({ params }: Props) {
             </div>
 
             {/* Message Card Section */}
-            <div className="relative max-w-3xl mx-auto">
-              <div className="message-card p-6 md:p-10 text-center">
+            <div className="relative max-w-3xl mx-auto ">
+              <div className="message-card p-6 md:p-10 text-center h-52">
                 <p className="text-xl md:text-2xl font-playfair text-white">
                   Dear{' '}
                   <span className="text-[#D4AF37] font-semibold">
@@ -89,7 +89,7 @@ export default async function GuestLandingPage({ params }: Props) {
                   </span>
                 </p>
 
-                <p className="mt-4 text-base md:text-lg font-dm-serif text-white/90 leading-relaxed">
+                <p className="mt-4 text-base md:text-lg pb-5 font-dm-serif text-white/90 leading-relaxed">
                   Please tap the envelope below to view your invitation. We look forward to celebrating this magical day with you.
                 </p>
               </div>
