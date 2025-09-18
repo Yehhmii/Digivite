@@ -38,7 +38,6 @@ function AdminContent({ children }: { children: React.ReactNode }) {
     return <main className="min-h-screen flex-1 p-4 sm:p-6">{children}</main>;
   }
 
-  // normal admin UI with sidebar/header
   return (
     <SidebarProvider>
       <div className="min-h-screen bg-gray-100">

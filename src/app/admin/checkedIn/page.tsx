@@ -46,7 +46,7 @@ export default function CheckedInPage() {
 
   useEffect(() => {
     if (status !== 'authenticated') return;
-    setPage(1); // reset page when search changes
+    setPage(1);
   }, [debouncedQuery, field, status]);
 
   useEffect(() => {
@@ -95,14 +95,11 @@ export default function CheckedInPage() {
 return (
     <div className="min-h-screen p-3 sm:p-6 bg-gray-50">
       <div className="max-w-5xl mx-auto">
-        {/* Header + Search (mobile-first, stacks) */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4 items-start">
-          {/* Title */}
           <div className="col-span-1 sm:col-span-1">
             <h1 className="text-lg sm:text-2xl font-semibold text-gray-800">Checked-in Guests</h1>
           </div>
 
-          {/* Search controls: occupies two cols on desktop, full width stacked on mobile */}
           <div className="col-span-1 sm:col-span-2">
             <div className="bg-white border rounded-md p-3 shadow-sm">
               <div className="flex flex-col sm:flex-row sm:items-center sm:gap-3 gap-2">
@@ -111,7 +108,7 @@ return (
                   onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
                     setField(e.target.value as SearchField)
                   }
-                  className="w-full sm:w-40 p-2 border rounded bg-white text-sm"
+                  className="w-[90%] sm:w-40 p-2 border rounded bg-white text-sm"
                   aria-label="Search field"
                 >
                   <option value="all">All</option>
@@ -124,22 +121,20 @@ return (
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   placeholder="Search by name, email or table..."
-                  className="w-full p-2 border rounded text-sm"
+                  className="w-[90%] p-2 border rounded text-sm"
                   type="search"
                   aria-label="Search guests"
                 />
 
-                {/* Clear button - small on desktop, full width on mobile */}
                 <button
                   onClick={() => { setQuery(''); setField('all'); }}
-                  className="mt-2 sm:mt-0 w-full sm:w-auto px-3 py-2 bg-white border rounded text-sm shadow-sm hover:bg-gray-50"
+                  className="mt-2 sm:mt-0 w-[90%] sm:w-auto px-3 py-2 bg-white border rounded text-sm shadow-sm hover:bg-gray-50"
                   aria-label="Clear search"
                 >
                   Clear
                 </button>
               </div>
 
-              {/* optional: show helper or loading indicator */}
               <div className="mt-2 flex items-center justify-between text-xs text-gray-500">
                 <div>{loading ? 'Searching...' : `Showing ${guests.length} results`}</div>
                 <div className="hidden sm:block">Tip: search by name, email or table #</div>
@@ -148,19 +143,16 @@ return (
           </div>
         </div>
 
-        {/* error */}
         {error && (
           <div className="mb-4 p-3 bg-red-50 border text-red-700 rounded text-sm">
             {error}
           </div>
         )}
 
-        {/* list */}
         <div className="mb-4">
           <CheckedInList guests={guests} onSelect={(g) => setSelectedGuest(g)} loading={loading} />
         </div>
 
-        {/* pagination - mobile stacks, desktop inline */}
         <div className="mt-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div className="text-sm text-gray-600">Showing {guests.length} of {total} results</div>
 
@@ -190,7 +182,6 @@ return (
         </div>
       </div>
 
-      {/* guest modal */}
       {selectedGuest && (
         <CheckedInModal guest={selectedGuest} onClose={() => setSelectedGuest(null)} />
       )}

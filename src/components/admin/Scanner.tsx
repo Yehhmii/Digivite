@@ -1,4 +1,3 @@
-// components/admin/Scanner.tsx
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
@@ -15,11 +14,11 @@ export default function Scanner({ onResult }: { onResult: (res: ScanResult) => v
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   const onResultRef = useRef(onResult);
-  onResultRef.current = onResult; // keep latest callback without re-running the effect
+  onResultRef.current = onResult;
 
   const [scanning, setScanning] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const startedRef = useRef(false); // prevent double-start
+  const startedRef = useRef(false);
 
   useEffect(() => {
     let stream: MediaStream | null = null;
@@ -29,12 +28,9 @@ export default function Scanner({ onResult }: { onResult: (res: ScanResult) => v
 
     const tryPlay = async (video: HTMLVideoElement) => {
       try {
-        // attempt to play; some browsers may throw AbortError — ignore it.
         await video.play();
       } catch (err: any) {
-        // ignore AbortError or NotAllowedError (will show UI message instead)
         if (err?.name === 'AbortError' || err?.name === 'NotAllowedError') {
-          // swallow — scanning won't work until user allows camera
           console.warn('video.play() interrupted or not allowed:', err?.name);
         } else {
           console.error('video.play() error', err);
@@ -46,7 +42,6 @@ export default function Scanner({ onResult }: { onResult: (res: ScanResult) => v
       if (startedRef.current) return;
       startedRef.current = true;
 
-      // Try environment (mobile), fallback to generic video (desktop)
       const constraintsList = [
         { video: { facingMode: { ideal: 'environment' } }, audio: false },
         { video: true, audio: false }
@@ -57,7 +52,6 @@ export default function Scanner({ onResult }: { onResult: (res: ScanResult) => v
           stream = await navigator.mediaDevices.getUserMedia(constraints as MediaStreamConstraints);
           break;
         } catch (err) {
-          // try next constraint
           stream = null;
         }
       }
@@ -70,13 +64,11 @@ export default function Scanner({ onResult }: { onResult: (res: ScanResult) => v
 
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
-        // don't await in the top-level try to avoid AbortError crash; perform safe play
         await tryPlay(videoRef.current);
       }
 
       setScanning(true);
 
-      // scanning loop
       intervalId = window.setInterval(() => {
         scanFrame();
       }, 300);
@@ -93,12 +85,10 @@ export default function Scanner({ onResult }: { onResult: (res: ScanResult) => v
       ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
       const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 
-      // Prefer BarcodeDetector if available
       const BarcodeDetectorCls: any = (window as any).BarcodeDetector;
       if (BarcodeDetectorCls) {
         try {
           const detector = new BarcodeDetectorCls({ formats: ['qr_code'] });
-          // Some implementations accept ImageBitmap or canvas
           const barcodes = await detector.detect(canvas as any);
           if (barcodes && barcodes.length > 0) {
             const raw = barcodes[0].rawValue;
@@ -118,7 +108,7 @@ export default function Scanner({ onResult }: { onResult: (res: ScanResult) => v
           handleScanned(code.data);
         }
       } catch (err) {
-        // ignore parse errors
+        // implement parse errors
       }
     };
 
@@ -148,7 +138,6 @@ export default function Scanner({ onResult }: { onResult: (res: ScanResult) => v
         console.error('verify error', err);
         onResultRef.current({ ok: false, message: 'Server error during verification' });
       } finally {
-        // allow next scan after short delay
         setTimeout(() => {
           scanningNow = false;
         }, 500);
@@ -164,8 +153,7 @@ export default function Scanner({ onResult }: { onResult: (res: ScanResult) => v
       }
       startedRef.current = false;
     };
-    // intentionally empty deps: we use onResultRef to read latest callback
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+
   }, []);
 
   return (
@@ -175,7 +163,6 @@ export default function Scanner({ onResult }: { onResult: (res: ScanResult) => v
       ) : (
         <div className="relative w-full">
           <video ref={videoRef} className="w-full h-auto rounded bg-black" playsInline muted />
-          {/* scanning overlay */}
           <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
             <div className="w-64 h-40 sm:w-80 sm:h-56 border-4 border-dashed border-indigo-400 rounded-md" />
           </div>

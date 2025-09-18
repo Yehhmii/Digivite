@@ -21,7 +21,7 @@ export default function Header({ admin }: HeaderProps) {
       router.push('/admin/login');
     } catch (error) {
       console.error('Logout failed:', error);
-      // add toast
+      // add toast for improvement
     } finally {
       setIsLoggingOut(false);
     }
@@ -34,9 +34,7 @@ export default function Header({ admin }: HeaderProps) {
   return (
     <header className="bg-white shadow-sm border-b sticky top-0 z-40 h-16">
       <div className="flex justify-between items-center px-4 sm:px-6 h-full">
-        {/* Left side - Menu button and title */}
         <div className="flex items-center space-x-3">
-          {/* Mobile menu button */}
           <button
             onClick={toggle}
             className="md:hidden p-2 rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition-colors duration-200"
@@ -47,7 +45,6 @@ export default function Header({ admin }: HeaderProps) {
             </svg>
           </button>
           
-          {/* Page title */}
           <div className="hidden sm:block">
             <h2 className="text-lg sm:text-xl font-semibold text-gray-800">
               Welcome back, {admin?.name || 'Admin'}
@@ -60,18 +57,14 @@ export default function Header({ admin }: HeaderProps) {
           </div>
         </div>
 
-        {/* Right side - User menu */}
         <div className="flex items-center space-x-2 sm:space-x-4">
-          {/* Notifications (placeholder) */}
           <button className="hidden sm:block p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-full transition-colors duration-200">
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-5 5v-5zm-5-5h5l-5-5v5z" />
             </svg>
           </button>
           
-          {/* User dropdown */}
           <div className="relative">
-            {/* Desktop logout button */}
             <button
               onClick={handleLogout}
               disabled={isLoggingOut}

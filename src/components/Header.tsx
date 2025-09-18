@@ -15,7 +15,6 @@ export default function Header({ eventTitle = "M'J FOREVER25", className = "" }:
           </h1>
         </div>
         
-        {/* Gold line with dot in the middle */}
         <div className="relative w-32 md:w-40 h-0.5 bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent mx-auto">
           <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-2 h-2 bg-[#D4AF37] rounded-full shadow-sm shadow-[#D4AF37]/50"></div>
         </div>

@@ -46,11 +46,9 @@ export default function AttendanceModal({ isOpen, onClose, slug }: AttendanceMod
         return;
       }
 
-      // success
       setSent(true);
       setLoading(false);
 
-      // auto-close after short delay (or leave to user to close)
       setTimeout(() => {
         setSent(false);
         onClose();
@@ -67,10 +65,8 @@ export default function AttendanceModal({ isOpen, onClose, slug }: AttendanceMod
         ref={modalRef}
         className="bg-gradient-to-br overflow-y-auto from-black/70 to-[#722F37]/20 backdrop-blur-md border border-[#D4AF37]/30 rounded-xl shadow-2xl w-full max-w-md max-h-[95vh] sm:max-h-[90vh] overflow-hidden animate__animated animate__zoomIn modal-luxury"
       >
-        {/* Scrollable content container */}
         <div className="">
           <div className="p-4 sm:p-6 lg:p-8">
-            {/* Header */}
             <div className="flex justify-between items-start mb-6 sm:mb-8">
               <h3 className="text-xl sm:text-2xl lg:text-3xl font-playfair text-[#D4AF37] font-light leading-tight flex-1 pr-4">
                 We're Excited!
@@ -86,7 +82,6 @@ export default function AttendanceModal({ isOpen, onClose, slug }: AttendanceMod
             
             {!sent ? (
               <>
-                {/* Icon and Description */}
                 <div className="text-center mb-6 sm:mb-8">
                   <div className="text-3xl sm:text-4xl lg:text-5xl mb-3 sm:mb-4 text-[#D4AF37]">
                     <GiGlassCelebration className='mx-auto'/>
@@ -96,9 +91,7 @@ export default function AttendanceModal({ isOpen, onClose, slug }: AttendanceMod
                   </p>
                 </div>
 
-                {/* Form */}
                 <div className="space-y-3 sm:space-y-4">
-                  {/* Email Input */}
                   <div>
                     <label className="block text-[#D4AF37] font-dm-serif text-xs sm:text-sm mb-2 tracking-wide">
                       Email Address
@@ -112,7 +105,6 @@ export default function AttendanceModal({ isOpen, onClose, slug }: AttendanceMod
                     />
                   </div>
 
-                  {/* Phone Input */}
                   <div>
                     <label className="block text-[#D4AF37] font-dm-serif text-xs sm:text-sm mb-2 tracking-wide">
                       Phone Number
@@ -143,14 +135,12 @@ export default function AttendanceModal({ isOpen, onClose, slug }: AttendanceMod
                     </select>
                   </div> */}
 
-                  {/* Error Message */}
                   {error && (
                     <div className="text-xs sm:text-sm text-red-400 font-dm-serif bg-red-900/20 p-2 sm:p-3 rounded border border-red-500/30 break-words">
                       {error}
                     </div>
                   )}
 
-                  {/* Action Buttons */}
                   <div className="pt-4 sm:pt-6 flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
                     <button
                       onClick={onClose}
@@ -174,7 +164,6 @@ export default function AttendanceModal({ isOpen, onClose, slug }: AttendanceMod
                 </div>
               </>
             ) : (
-              // Success state
               <div className="text-center py-6 sm:py-8">
                 <div className="text-4xl sm:text-5xl lg:text-6xl mb-4 sm:mb-6 text-[#D4AF37] animate-bounce">✓</div>
                 <h4 className="text-lg sm:text-xl lg:text-2xl font-playfair text-[#D4AF37] mb-3 sm:mb-4 font-light">
@@ -199,7 +188,6 @@ export default function AttendanceModal({ isOpen, onClose, slug }: AttendanceMod
         </div>
       </div>
 
-      {/* Custom Styles */}
       <style jsx>{`
         .modal-luxury {
           box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 100px rgba(212, 175, 55, 0.1);

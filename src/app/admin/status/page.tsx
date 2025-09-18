@@ -1,4 +1,3 @@
-// app/admin/status/page.tsx
 'use client';
 
 import React, { useEffect, useState } from 'react';
@@ -117,7 +116,6 @@ export default function StatusPage() {
           <div className="p-6 text-center text-gray-600">Loading status…</div>
         ) : (
           <>
-            {/* Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
               <StatusCard
                 title="Pending"
@@ -142,7 +140,6 @@ export default function StatusPage() {
               />
             </div>
 
-            {/* Lists */}
             <div className="space-y-4">
               {(['PENDING', 'ACCEPTED', 'DECLINED'] as const).map((statusKey) => (
                 <div key={statusKey} className="bg-white border rounded p-3">
@@ -167,7 +164,7 @@ export default function StatusPage() {
                         <button
                           key={g.id}
                           onClick={() => setSelected(g)}
-                          className="w-full text-left flex items-center justify-between p-2 rounded hover:bg-gray-50"
+                          className="w-[90%] text-left flex items-center justify-between p-2 rounded hover:bg-gray-50"
                         >
                           <div className="flex items-center gap-3 min-w-0">
                             <div className="w-9 h-9 flex items-center justify-center rounded-full bg-indigo-600 text-white text-sm font-medium">
@@ -190,7 +187,7 @@ export default function StatusPage() {
                       )}
 
                       {(guestsByStatus[statusKey] || []).map((g: GuestShort) => (
-                        <div key={g.id} className="w-full p-2 rounded bg-white">
+                        <div key={g.id} className="w-[90%] p-2 rounded bg-white">
                           <div className="flex items-center justify-between">
                             <div className="min-w-0">
                               <div className="text-sm font-medium">{g.fullName}</div>
@@ -199,7 +196,6 @@ export default function StatusPage() {
                             <div className="text-xs text-gray-500">Table {g.tableNumber ?? '—'}</div>
                           </div>
 
-                          {/* gifts */}
                           {g.gifts && g.gifts.length > 0 && (
                             <div className="mt-2 text-sm text-gray-700 bg-yellow-50 p-2 rounded">
                               <div className="font-semibold text-xs">Gift(s):</div>
@@ -221,7 +217,6 @@ export default function StatusPage() {
         )}
       </div>
 
-      {/* Selected guest modal */}
       {selected && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black opacity-40" onClick={() => setSelected(null)} />
@@ -250,7 +245,6 @@ export default function StatusPage() {
   );
 }
 
-/* small StatusCard component */
 function StatusCard({ title, count, color, onToggle, expanded }:
   { title: string; count: number; color: 'green'|'red'|'amber'; onToggle: () => void; expanded: boolean }) {
   const colorMap: Record<string, string> = {

@@ -1,11 +1,10 @@
-// components/guest/Carousel.tsx
 "use client";
 import React, { useEffect, useRef, useState } from "react";
 
 interface CarouselProps {
-  images: string[];            // array of image paths (e.g. ['/c1.jpg', '/c2.jpg'])
-  speed?: number;              // px per second, default 60 (tweak to taste)
-  itemBaseWidth?: number;      // base width for each item in px (fallback)
+  images: string[];
+  speed?: number;
+  itemBaseWidth?: number;
 }
 
 export default function Carousel({
@@ -26,7 +25,6 @@ export default function Carousel({
   // duplicate images for seamless loop
   const loopImages = [...images, ...images];
 
-  // compute widths & total width (for first images.length)
   const recomputeSizes = () => {
     const track = trackRef.current;
     const container = containerRef.current;
@@ -34,7 +32,6 @@ export default function Carousel({
     const items = Array.from(track.children) as HTMLElement[];
     if (!items.length) return;
 
-    // compute total width for single set
     let singleSetWidth = 0;
     for (let i = 0; i < images.length; i++) {
       const el = items[i];
@@ -51,10 +48,8 @@ export default function Carousel({
     const items = Array.from(track.children) as HTMLElement[];
     const containerRect = container.getBoundingClientRect();
     const centerX = containerRect.left + containerRect.width / 2;
-    // trackLeft (distance track has been translated)
     const trackRect = track.getBoundingClientRect();
 
-    // iterate only first set of items
     let closestIndex = 0;
     let closestDist = Infinity;
     for (let i = 0; i < images.length; i++) {
@@ -70,35 +65,27 @@ export default function Carousel({
     setActiveIndex(closestIndex);
   };
 
-  // animation loop
   useEffect(() => {
     const track = trackRef.current;
     const container = containerRef.current;
     if (!track || !container || images.length === 0) return;
 
-    // ensure sizes calculated
     recomputeSizes();
     updateActiveIndex();
 
     const step = (t: number) => {
       if (lastTimeRef.current == null) lastTimeRef.current = t;
-      const dt = (t - lastTimeRef.current) / 1000; // seconds
+      const dt = (t - lastTimeRef.current) / 1000;
       lastTimeRef.current = t;
 
-      // move translate left by speed * dt
       translateRef.current -= speed * dt;
 
-      // reset when consumed one set width
       if (totalWidth > 0 && Math.abs(translateRef.current) >= totalWidth) {
-        // wrap - ensures seamless jump without visible glitch
         translateRef.current += totalWidth;
       }
 
-      // apply transform
       track.style.transform = `translateX(${translateRef.current}px)`;
 
-      // update active index periodically (not on every frame for perf)
-      // we'll update at about every 120ms (approx 8fps)
       const now = performance.now();
       if (!("lastActiveUpdate" in (lastTimeRef as any))) {
         (lastTimeRef as any).lastActiveUpdate = now;
@@ -115,7 +102,6 @@ export default function Carousel({
 
     const onResize = () => {
       recomputeSizes();
-      // if track width changed, keep translateRef bounded
       if (totalWidth > 0) {
         translateRef.current = translateRef.current % totalWidth;
       }
@@ -130,15 +116,12 @@ export default function Carousel({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [images, speed, totalWidth]);
 
-  // recompute sizes after first paint (images might load)
   useEffect(() => {
     const handle = () => {
       recomputeSizes();
       updateActiveIndex();
     };
-    // re-run on next tick to give DOM time for images
     const id = setTimeout(handle, 100);
-    // also run when images load
     const track = trackRef.current;
     const imgs = track ? Array.from(track.querySelectorAll("img")) : [];
     const boundLoaders: (() => void)[] = [];
@@ -159,7 +142,6 @@ export default function Carousel({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [images]);
 
-  // Tailwind + small inline styles for items — center one gets a special class
   return (
     <div ref={containerRef} className="w-full overflow-hidden">
       <div
@@ -168,7 +150,6 @@ export default function Carousel({
         style={{ transform: `translateX(${translateRef.current}px)` }}
       >
         {loopImages.map((src, i) => {
-          // compute index in original images
           const idx = i % images.length;
           const isActive = idx === activeIndex;
           return (

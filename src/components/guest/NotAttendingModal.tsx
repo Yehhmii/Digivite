@@ -60,10 +60,8 @@ export default function NotAttendingModal({ isOpen, onClose, slug, guestName }: 
         ref={modalRef}
         className="bg-gradient-to-br overflow-y-auto  px-9 from-black/90 to-[#722F37]/20 backdrop-blur-md border border-[#722F37]/40 rounded-xl shadow-2xl w-full max-w-md max-h-[95vh] sm:max-h-[90vh] overflow-hidden animate__animated animate__zoomIn modal-luxury"
       >
-        {/* Scrollable content container */}
         <div className="">
           <div className="p-4 sm:p-6 lg:p-8">
-            {/* Header */}
             <div className="flex justify-between items-start mb-6 sm:mb-8">
               <h3 className="text-xl sm:text-2xl lg:text-3xl font-playfair text-[#722F37] font-light leading-tight flex-1 pr-4">
                 We'll Miss You{guestName ? `, ${guestName}` : ''}
@@ -78,24 +76,20 @@ export default function NotAttendingModal({ isOpen, onClose, slug, guestName }: 
             </div>
             
             <div className="text-center space-y-4 sm:space-y-6">
-              {/* Icon */}
               <div className="text-3xl sm:text-4xl lg:text-5xl mb-4 sm:mb-6 text-[#722F37]">
                 <FaRegSadTear className='mx-auto'/>
               </div>
               
-              {/* Message */}
               <p className="text-white/90 font-dm-serif leading-relaxed text-sm sm:text-base">
                 We understand you can't make it. You'll be missed at our special day.
               </p>
               
-              {/* Gift form */}
               <div className="space-y-4 sm:space-y-6 pt-4 sm:pt-6 text-left">
                 <h4 className="text-center text-[#D4AF37] font-playfair text-base sm:text-lg font-light mb-3 sm:mb-4">
                   Would you like to send a gift?
                 </h4>
                 
                 <div className="space-y-3 sm:space-y-4">
-                  {/* Amount Input */}
                   <div>
                     <label className="block text-[#D4AF37] font-dm-serif text-xs sm:text-sm mb-2 tracking-wide">
                       Amount (optional)
@@ -109,7 +103,6 @@ export default function NotAttendingModal({ isOpen, onClose, slug, guestName }: 
                     />
                   </div>
                   
-                  {/* Provider Input */}
                   <div>
                     <label className="block text-[#D4AF37] font-dm-serif text-xs sm:text-sm mb-2 tracking-wide">
                       Provider
@@ -123,7 +116,6 @@ export default function NotAttendingModal({ isOpen, onClose, slug, guestName }: 
                     />
                   </div>
                   
-                  {/* Account Details Display */}
                   <div className='w-full p-3 sm:p-4 bg-gradient-to-br from-[#1a1a1a] to-[#0d0d0d] border-2 border-[#D4AF37]/30 rounded-none font-dm-serif text-white newspaper-display'>
                     <h5 className="text-[#D4AF37] font-semibold mb-2 sm:mb-3 text-xs sm:text-sm tracking-wider">
                       ACCOUNT DETAILS
@@ -146,7 +138,6 @@ export default function NotAttendingModal({ isOpen, onClose, slug, guestName }: 
                 </div>
               </div>
 
-              {/* Error/Success Messages */}
               {error && (
                 <div className="text-xs sm:text-sm text-red-400 font-dm-serif bg-red-900/20 p-2 sm:p-3 rounded border border-red-500/30 break-words">
                   {error}
@@ -158,7 +149,6 @@ export default function NotAttendingModal({ isOpen, onClose, slug, guestName }: 
                 </div>
               )}
 
-              {/* Action Buttons */}
               <div className="pt-4 sm:pt-6 flex flex-row sm:flex-row gap-3 sm:gap-4 justify-center">
                 <button 
                   onClick={onClose} 
@@ -182,7 +172,6 @@ export default function NotAttendingModal({ isOpen, onClose, slug, guestName }: 
         </div>
       </div>
 
-      {/* Custom Styles */}
       <style jsx>{`
         .modal-luxury {
           box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 100px rgba(114, 47, 55, 0.1);

@@ -8,7 +8,6 @@ export default function DashboardPage() {
       <h1 className="text-2xl font-bold mb-8">Admin Dashboard</h1>
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        {/* Create Guest Card */}
         <Link href="/admin/guests">
           <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow cursor-pointer">
             <div className="text-4xl mb-3">👤</div>
@@ -17,7 +16,6 @@ export default function DashboardPage() {
           </div>
         </Link>
 
-        {/* Verify Card */}
         <Link href="/admin/scanner">
           <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow cursor-pointer">
             <div className="text-4xl mb-3">🔍</div>
@@ -26,7 +24,6 @@ export default function DashboardPage() {
           </div>
         </Link>
 
-        {/* Checked-in Card */}
         <Link href="/admin/checkedIn">
           <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow cursor-pointer">
             <div className="text-4xl mb-3">✅</div>
@@ -35,7 +32,6 @@ export default function DashboardPage() {
           </div>
         </Link>
 
-        {/* Gift Card */}
         <Link href="/admin/status">
           <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow cursor-pointer">
             <div className="text-4xl mb-3">🎁</div>

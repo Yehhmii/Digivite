@@ -34,7 +34,6 @@ export default function Footer({
           <div className="absolute top-1/2 right-1/4 transform translate-x-1/2 -translate-y-1/2 w-1.5 h-1.5 bg-[#D4AF37] rounded-full opacity-70"></div>
         </div>
 
-        {/* Corner decorative elements */}
         <div className="absolute left-8 top-1/2 transform -translate-y-1/2 text-[#722F37] text-lg opacity-30 hidden md:block animate-bounce">
           <FaHeartbeat className='text-white w-12 h-12'/>
         </div>
@@ -42,7 +41,6 @@ export default function Footer({
           <FaHandHoldingHeart className='text-red-800 w-12 h-12'/>
         </div>
 
-        {/* Glass effect overlay */}
         <div className="absolute inset-0 bg-gradient-to-t from-white/5 to-transparent pointer-events-none"></div>
       </div>
     </footer>

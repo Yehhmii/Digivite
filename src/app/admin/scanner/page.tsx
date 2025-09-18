@@ -43,7 +43,6 @@ export default function ScannerPage() {
         </p>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Scanner box */}
           <div className="bg-white border rounded p-4">
             <Scanner
               onResult={(result: { ok: boolean; guest?: Omit<Guest, 'type'>; message?: string }) => {
@@ -56,7 +55,6 @@ export default function ScannerPage() {
             />
           </div>
 
-          {/* Details panel */}
           <div className="bg-white border rounded p-4">
             <h2 className="text-lg font-medium mb-2">Verified guest</h2>
 
@@ -107,7 +105,6 @@ export default function ScannerPage() {
         </div>
       </div>
 
-      {/* Assign table modal */}
       {showAssignModal && selectedGuest?.type === 'guest' && (
         <AssignTableModal
           guest={selectedGuest}

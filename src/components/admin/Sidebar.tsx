@@ -3,7 +3,6 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { createContext, useContext, useState, useEffect } from 'react';
 
-// Context for sidebar state
 const SidebarContext = createContext<{
   isOpen: boolean;
   toggle: () => void;
@@ -16,7 +15,6 @@ const SidebarContext = createContext<{
 
 export const useSidebar = () => useContext(SidebarContext);
 
-// Sidebar Provider (wrap your layout with this)
 export function SidebarProvider({ children }: { children: React.ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
@@ -25,7 +23,6 @@ export function SidebarProvider({ children }: { children: React.ReactNode }) {
     const checkScreenSize = () => {
       const mobile = window.innerWidth < 768;
       setIsMobile(mobile);
-      // Auto-close sidebar on mobile when switching to desktop
       if (!mobile) {
         setIsOpen(false);
       }
@@ -43,7 +40,6 @@ export function SidebarProvider({ children }: { children: React.ReactNode }) {
   return (
     <SidebarContext.Provider value={{ isOpen, toggle, close }}>
       {children}
-      {/* Mobile overlay */}
       {isMobile && isOpen && (
         <div 
           className="fixed inset-0 bg-opacity-50 z-40 md:hidden"
@@ -66,7 +62,6 @@ export default function Sidebar() {
   ];
 
   const handleLinkClick = () => {
-    // Close sidebar on mobile when clicking a link
     if (window.innerWidth < 768) {
       close();
     }
@@ -80,7 +75,6 @@ export default function Sidebar() {
       w-64
     `}>
       <div className="flex flex-col h-full">
-        {/* Header - only show on mobile */}
         <div className="flex items-center justify-between p-4 border-b bg-indigo-600 md:hidden">
           <h1 className="text-lg font-bold text-white">
             Admin Panel
@@ -96,12 +90,10 @@ export default function Sidebar() {
           </button>
         </div>
         
-        {/* Desktop header */}
         <div className="hidden md:block p-4 border-b">
           <h1 className="text-xl font-bold text-gray-800">Admin Panel</h1>
         </div>
         
-        {/* Navigation */}
         <nav className="flex-1 p-4 overflow-y-auto">
           <ul className="space-y-2">
             {navItems.map((item) => (
@@ -123,9 +115,9 @@ export default function Sidebar() {
               </li>
             ))}
           </ul>
+          <p className='text-sm mt-16'>Double click to navigate!</p>
         </nav>
         
-        {/* Footer */}
         <div className="p-4 border-t bg-gray-50">
           <div className="text-xs text-gray-500 text-center">
             Admin Dashboard v1.0

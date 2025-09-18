@@ -30,7 +30,6 @@ const InvitationCard = () => {
           }}
         />
         
-        {/* Fallback content if image doesn't load */}
         <div className="w-full h-96 bg-gradient-to-br from-black/80 to-[#722F37]/20 p-6 hidden flex-col justify-center items-center text-center border border-[#D4AF37]/20">
           <div className="space-y-6">
             <h3 className="text-3xl font-playfair text-[#D4AF37] mb-4">{`You're Invited!`}</h3>
@@ -57,7 +56,6 @@ const InvitationCard = () => {
   );
 };
 
-// Client Component for interactivity
 export default function RSVPPageClient({ 
   guestName, 
   eventTitle,
@@ -81,7 +79,6 @@ export default function RSVPPageClient({
   const openNotAttendingModal = async () => {
     // optimistic: mark declined on server, then show modal
     try {
-      // show modal immediately for UX
       setShowNotAttendingModal(true);
 
       const res = await fetch('/api/guest/decline', {
@@ -92,9 +89,9 @@ export default function RSVPPageClient({
       const data = await res.json();
       if (!res.ok) {
         console.error('Decline failed', data);
-        // optionally show toast
+        // update show toast
       } else {
-        // optionally update local UI or store that guest is declined
+        // update local UI or store that guest is declined
         console.log('Marked declined', data.guest);
       }
     } catch (err) {
@@ -108,24 +105,20 @@ export default function RSVPPageClient({
 
   return (
     <div className="min-h-screen bg-black/80 relative overflow-hidden">
-      {/* Background Text */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0">
         <h1 className="text-6xl md:text-8xl lg:text-9xl font-playfair text-white/5 font-bold tracking-wider transform -rotate-12">
           M'J FOREVER
         </h1>
       </div>
       
-      {/* Dark gradient overlay */}
       <div className="absolute inset-0 bg-gradient-to-br from-black/90 via-black/70 to-[#722F37]/20 z-1"></div>
       
-      {/* Content */}
       <div className="relative z-10">
         <Header eventTitle="M'J FOREVER25" />
         
         <main className="max-w-4xl mx-auto px-4 py-8 md:py-12">
           <div className="text-center space-y-12">
             
-            {/* Personalized greeting */}
             <div className="space-y-6 animate__animated animate__fadeInDown">
               <h1 className="text-3xl md:text-4xl lg:text-5xl font-playfair text-white font-light leading-tight">
                 {guestName ? (
@@ -139,19 +132,16 @@ export default function RSVPPageClient({
               </div>
             </div>
 
-            {/* Invitation Card */}
             <div className="flex justify-center">
               <InvitationCard />
             </div>
 
-            {/* RSVP Buttons */}
             <div className="space-y-8">
               <p className="text-xl md:text-2xl text-white/90 font-playfair font-light">
                 Please let us know if you can attend
               </p>
               
               <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
-                {/* Attending Button */}
                 <button
                   onClick={openAttendanceModal}
                   className="group relative px-10 py-4 bg-transparent border-2 border-[#D4AF37] text-[#D4AF37] font-dm-serif text-lg tracking-[0.1em] uppercase transition-all duration-500 hover:text-black overflow-hidden min-w-[220px] luxury-button"
@@ -159,11 +149,9 @@ export default function RSVPPageClient({
                   <div className="absolute inset-0 bg-[#D4AF37] transform -translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-in-out"></div>
                   <span className="relative z-10 font-light">I'll be there</span>
                   
-                  {/* Button glow effect */}
                   <div className="absolute inset-0 bg-[#D4AF37]/20 opacity-0 group-hover:opacity-100 blur-md transition-opacity duration-500 -z-10"></div>
                 </button>
 
-                {/* Not Attending Button */}
                 <button
                   onClick={openNotAttendingModal}
                   className="group relative px-10 py-4 bg-transparent border-2 border-[#722F37] text-[#722F37] font-dm-serif text-lg tracking-[0.1em] uppercase transition-all duration-500 hover:text-white overflow-hidden min-w-[220px] luxury-button"
@@ -171,13 +159,11 @@ export default function RSVPPageClient({
                   <div className="absolute inset-0 bg-[#722F37] transform -translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-in-out"></div>
                   <span className="relative z-10 font-light">Can't make it</span>
                   
-                  {/* Button glow effect */}
                   <div className="absolute inset-0 bg-[#722F37]/20 opacity-0 group-hover:opacity-100 blur-md transition-opacity duration-500 -z-10"></div>
                 </button>
               </div>
             </div>
 
-            {/* Decorative elements */}
             <div className="relative">
               <div className="flex justify-center items-center gap-8 opacity-40">
                 <div className="w-20 h-0.5 bg-gradient-to-r from-transparent to-[#D4AF37]"></div>
@@ -194,7 +180,6 @@ export default function RSVPPageClient({
         />
       </div>
 
-      {/* Floating decorative elements */}
       <div className="absolute top-20 left-10 text-[#D4AF37]/30 text-3xl animate-bounce hidden md:block"><FaHeartbeat className='text-red-800 w-16 h-16'/></div>
       <div className="absolute top-32 right-16 text-[#722F37]/40 text-2xl animate-pulse" style={{ animationDelay: '1s' }}>💕</div>
       
@@ -203,7 +188,6 @@ export default function RSVPPageClient({
       <div className="absolute top-1/3 right-8 text-[#722F37]/35 text-2xl animate-pulse" style={{ animationDelay: '2.5s' }}><FaHandHoldingHeart className='text-white w-12 h-12'/></div>
             
 
-      {/* Modals */}
       <AttendanceModal 
         isOpen={showAttendanceModal}
         onClose={closeAttendanceModal}
@@ -217,7 +201,6 @@ export default function RSVPPageClient({
         guestName={guestName}
       />
 
-      {/* Custom Styles */}
       <style jsx>{`
         .invitation-glow {
           box-shadow: 0 0 50px rgba(212, 175, 55, 0.15);

@@ -1,4 +1,3 @@
-// components/guest/Envelope.tsx
 "use client";
 import React, { useState } from "react";
 
@@ -17,9 +16,7 @@ export default function Envelope({ guestName = "Beloved Guest", onOpen }: Envelo
 
   return (
     <div className="flex flex-col items-center">
-      {/* Envelope wrapper */}
       <div className="relative w-72 md:w-96 h-44 md:h-56">
-        {/* inner card (revealed when open) */}
         <div className={`absolute inset-0 rounded-xl border border-white/6 backdrop-blur-md bg-white/5 transition-opacity duration-500 ${open ? "opacity-100" : "opacity-0 pointer-events-none"} p-6 flex flex-col justify-between`}>
           <div>
             <h3 className="font-playfair text-xl md:text-2xl text-[#EDE7D7]">M'J FOREVER25</h3>
@@ -28,14 +25,11 @@ export default function Envelope({ guestName = "Beloved Guest", onOpen }: Envelo
 
         </div>
 
-        {/* envelope body (visible always) */}
         <div className="absolute inset-0 rounded-xl border border-white/8 overflow-hidden shadow-2xl bg-gradient-to-br from-black/40 via-black/25 to-transparent">
-          {/* subtle texture / shine */}
           <div className="absolute inset-0 pointer-events-none">
             <div className="absolute -left-20 -top-20 w-60 h-60 rounded-full bg-gradient-to-tr from-white/6 to-transparent opacity-10 transform rotate-12 blur-xl" />
           </div>
 
-          {/* flap */}
           <button
             aria-label="Open envelope"
             onClick={toggle}
@@ -47,7 +41,6 @@ export default function Envelope({ guestName = "Beloved Guest", onOpen }: Envelo
             </div>
           </button>
 
-          {/* base of envelope (visual) */}
           <div className="absolute left-0 right-0 bottom-0 h-1/2 flex items-center justify-center">
             <div className="w-11/12 h-[70%] rounded-lg bg-gradient-to-b from-black/10 to-black/5 border border-white/6 flex items-center justify-center">
               <div className="text-center px-4">
@@ -58,7 +51,6 @@ export default function Envelope({ guestName = "Beloved Guest", onOpen }: Envelo
         </div>
       </div>
 
-      {/* small decorative shapes */}
       <div className="flex gap-3 mt-4">
         <div className="w-4 h-4 rounded-full bg-[#D4AF37] opacity-85" />
         <div className="w-3 h-5 rounded-md bg-[#6B0F1A] opacity-70 rotate-12" />

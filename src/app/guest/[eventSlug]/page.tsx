@@ -12,7 +12,6 @@ import { GiEternalLove, GiLoveSong, GiLoveMystery, GiBigDiamondRing } from "reac
 type Props = { params: Promise<{ eventSlug: string }> };
 
 export default async function GuestLandingPage({ params }: Props) {
-  // Await the params Promise
   const { eventSlug } = await params;
 
   // find guest by slug
@@ -28,7 +27,7 @@ export default async function GuestLandingPage({ params }: Props) {
   });
 
   if (!guest) {
-    return notFound(); // Next.js 404
+    return notFound();
   }
 
   const event = await prisma.event.findUnique({
@@ -38,7 +37,6 @@ export default async function GuestLandingPage({ params }: Props) {
 
   const eventTitle = event?.title ?? 'the event';
 
-  // Array of images for easier carousel management
   const carouselImages = [
     '/couple-1.jpg',
     '/couple-2.jpg',
@@ -49,20 +47,16 @@ export default async function GuestLandingPage({ params }: Props) {
 
   return (
     <div className="min-h-screen bg-black overflow-x-hidden">
-      {/* Hero Section with Background Image */}
       <div className="relative min-h-screen bg-cover bg-center bg-no-repeat" 
            style={{ backgroundImage: "url('/couples-hero.jpg')" }}>
         {/* Dark overlay */}
         <div className="absolute inset-0 bg-black/60 backdrop-blur-[1px]"></div>
         
-        {/* Content */}
         <div className="relative z-10">
           <Header eventTitle="M'J FOREVER25" />
           
-          {/* Main Content */}
           <div className="flex flex-col items-center justify-center min-h-[calc(100vh-200px)] px-4">
             
-            {/* Introduction Text */}
             <div className="text-center mb-12 space-y-4 animate__animated animate__fadeInUp">
               <h1 className="text-3xl md:text-5xl lg:text-6xl font-playfair text-white font-light leading-tight">
                 You have been invited to
@@ -90,10 +84,9 @@ export default async function GuestLandingPage({ params }: Props) {
                 </p>
 
                 <p className="mt-4 text-base md:text-lg pb-5 font-dm-serif text-white/90 leading-relaxed">
-                  Please tap the envelope below to view your invitation. We look forward to celebrating this magical day with you.
+                  Please tap the button below to view your invitation. We look forward to celebrating this magical day with you.
                 </p>
               </div>
-              {/* pointer triangle */}
               <div className="pointer-wrap">
                 <div className="pointer" />
               </div>
@@ -104,7 +97,6 @@ export default async function GuestLandingPage({ params }: Props) {
                 <Envelope guestName={guest.fullName ?? 'Beloved Guest'} />
               </div>
               
-              {/* Tap to Open Button */}
               <div className="mt-12">
                 <a 
                   href={`/guest/${eventSlug}/rsvp`} 

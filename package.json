@@ -14,6 +14,7 @@
     "animate.css": "^4.1.1",
     "jose": "^6.0.12",
     "jsqr": "^1.4.0",
+    "lucide-react": "^0.543.0",
     "nanoid": "^5.1.5",
     "next": "15.4.6",
     "next-auth": "^4.24.11",

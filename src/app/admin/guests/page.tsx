@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
+import GuestListModal from '@/components/admin/GuestListModal';
 
 export default function CreateGuestPage() {
   const [fullName, setFullName] = useState('');
@@ -9,12 +10,12 @@ export default function CreateGuestPage() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [generatedSlug, setGeneratedSlug] = useState<string | null>(null);
+  const [showGuestList, setShowGuestList] = useState(false);
   const [copied, setCopied] = useState(false);
 
   const router = useRouter();
   const { data: session, status } = useSession();
 
-  // replace with your actual event identifier (id, slug or title)
   const EVENT_ID = "M'J Forever25";
 
   if (status === 'loading') return <div>Loading...</div>;
@@ -37,7 +38,7 @@ export default function CreateGuestPage() {
         headers: {
           'Content-Type': 'application/json'
         },
-        credentials: 'include', // ensure cookies/session are sent
+        credentials: 'include',
         body: JSON.stringify({ fullName, eventId: EVENT_ID })
       });
 
@@ -70,7 +71,6 @@ export default function CreateGuestPage() {
     try {
       await navigator.clipboard.writeText(invitationUrl);
       setCopied(true);
-      // small reset of the copied state
       setTimeout(() => setCopied(false), 2500);
     } catch (err) {
       console.error('Copy failed', err);
@@ -80,7 +80,6 @@ export default function CreateGuestPage() {
 
   const openGuestPage = () => {
     if (!generatedSlug) return;
-    // open in a new tab
     window.open(`/guest/${generatedSlug}`, '_blank');
   };
 
@@ -103,7 +102,7 @@ export default function CreateGuestPage() {
             type="text"
             value={fullName}
             onChange={(e) => setFullName(e.target.value)}
-            className="w-full p-2 border rounded"
+            className="w-[90%] p-2 border rounded"
             placeholder='Mr John Doe'
             required
           />
@@ -115,13 +114,12 @@ export default function CreateGuestPage() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 disabled:bg-blue-300"
+          className="w-[80%] bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 disabled:bg-blue-300"
         >
           {loading ? 'Creating...' : 'Create Guest'}
         </button>
       </form>
 
-      {/* Generated slug / link UI */}
       {generatedSlug && (
       <div className="mt-6 p-4 border rounded bg-white shadow-sm">
         <h4 className="font-medium mb-2">Guest link</h4>
@@ -129,7 +127,7 @@ export default function CreateGuestPage() {
           <input
             readOnly
             value={`/guest/${generatedSlug}`}
-            className="flex-1 p-2 border rounded bg-gray-50 w-full sm:w-auto"
+            className="flex-1 p-2 border rounded bg-gray-50 w-[90%] sm:w-auto"
           />
           <div className="flex space-x-2">
             <button
@@ -163,6 +161,22 @@ export default function CreateGuestPage() {
           <li>Use the slug in your invitation URL: /guest/[slug]</li>
         </ol>
       </div>
+
+
+      <div className="mt-6 flex gap-3">
+        <button
+          onClick={() => setShowGuestList(true)}
+          className="px-4 py-2 bg-[#722F37] text-white rounded hover:bg-[#5a2327]"
+        >
+          Want to see already created guests? Click here
+        </button>
+      </div>
+      <GuestListModal
+        isOpen={showGuestList}
+        onClose={() => setShowGuestList(false)}
+        eventId={EVENT_ID}
+      />
     </div>
+    
   )
 }

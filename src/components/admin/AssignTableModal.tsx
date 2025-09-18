@@ -117,7 +117,6 @@ export default function AssignTableModal({
   };
 
   return (
-    // modal overlay
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-black opacity-40" onClick={onClose} />
       <div className="relative bg-white rounded-lg shadow-lg w-full max-w-md p-6 z-10">

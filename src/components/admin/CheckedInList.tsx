@@ -1,8 +1,7 @@
-// components/admin/CheckedInList.tsx
 'use client';
 
 import React from 'react';
-import type { Guest } from '../../app/admin/checkedIn/page'; // optional type file
+import type { Guest } from '../../app/admin/checkedIn/page';
 
 export default function CheckedInList({
   guests,
@@ -27,7 +26,7 @@ export default function CheckedInList({
         <button
           key={g.id}
           onClick={() => onSelect?.(g)}
-          className="w-full text-left flex items-center justify-between bg-white border rounded-lg p-3 shadow-sm hover:shadow-md transition"
+          className="w-[90%] text-left flex items-center justify-between bg-white border rounded-lg p-3 shadow-sm hover:shadow-md transition"
         >
           <div className="flex items-center gap-3 min-w-0">
             <div className="w-10 h-10 flex items-center justify-center rounded-full bg-indigo-600 text-white text-sm font-medium">
