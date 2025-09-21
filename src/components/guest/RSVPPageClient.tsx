@@ -6,7 +6,7 @@ import Footer from '@/components/Footer';
 import AttendanceModal from './AttendanceModal';
 import NotAttendingModal from './NotAttendingModal';
 import { FaClover } from "react-icons/fa6";
-import { FaHeartbeat, FaHandHoldingHeart } from "react-icons/fa";
+import { FaHeartbeat, FaHandHoldingHeart, FaChurch, FaUtensils, FaMapMarkerAlt } from "react-icons/fa";
 import { GiBigDiamondRing } from "react-icons/gi";
 
 const InvitationCard = () => {
@@ -68,6 +68,14 @@ export default function RSVPPageClient({
   const [showAttendanceModal, setShowAttendanceModal] = useState(false);
   const [showNotAttendingModal, setShowNotAttendingModal] = useState(false);
 
+  const churchLocation = "St. Mary's Church, Lagos, Nigeria"; // or "6.5244,3.3792"
+  const receptionLocation = "Royal Banquet Hall, Lagos, Nigeria"; // or "6.5000,3.3800"
+
+  function getGoogleMapsUrl(location: string) {
+    // Use "search" so it works with addresses or coordinates
+    return `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(location)}`;
+  }
+
   const openAttendanceModal = () => {
     setShowAttendanceModal(true);
   };
@@ -103,6 +111,41 @@ export default function RSVPPageClient({
     setShowNotAttendingModal(false);
   };
 
+  function MapButton({
+    href,
+    title,
+    subtitle,
+    Icon,
+  }: {
+    href: string;
+    title: string;
+    subtitle?: string;
+    Icon: React.ComponentType<any>;
+  }) {
+    return (
+      <a
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="w-[90%] sm:w-[320px] flex items-center gap-4 p-4 rounded-2xl border-2 border-transparent hover:border-[#D4AF37] transition-all duration-300 bg-white/5 backdrop-blur-sm shadow-lg"
+        aria-label={`Open ${title} in Google Maps`}
+      >
+        <div className="flex items-center justify-center w-14 h-14 rounded-xl bg-[#722F37]/20 ring-1 ring-[#D4AF37]/20">
+          <Icon className="w-7 h-7 text-[#D4AF37]" />
+        </div>
+
+        <div className="text-left">
+          <div className="text-sm text-[#D4AF37] uppercase tracking-wide font-playfair">{title}</div>
+          <div className="text-xs text-white/80">{subtitle}</div>
+        </div>
+
+        <div className="ml-auto hidden sm:flex items-center text-white/60">
+          <FaMapMarkerAlt className="w-4 h-4 mr-2" />
+        </div>
+      </a>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-black/80 relative overflow-hidden">
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0">
@@ -134,6 +177,22 @@ export default function RSVPPageClient({
 
             <div className="flex justify-center">
               <InvitationCard />
+            </div>
+
+            <div className="mt-6 flex flex-col sm:flex-row gap-4 justify-center items-stretch px-4">
+              <MapButton
+                href={getGoogleMapsUrl(churchLocation)}
+                title="Ceremony (Church)"
+                subtitle="St. Mary's Church — 10:00 AM" // optional display text
+                Icon={FaChurch}
+              />
+
+              <MapButton
+                href={getGoogleMapsUrl(receptionLocation)}
+                title="Reception"
+                subtitle="Royal Banquet Hall — 1:00 PM"
+                Icon={FaUtensils}
+              />
             </div>
 
             <div className="space-y-8">

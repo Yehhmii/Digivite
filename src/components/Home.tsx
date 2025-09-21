@@ -5,12 +5,103 @@ import { FaEnvelopeOpenText, FaEnvelope, FaPhoneVolume } from "react-icons/fa";
 import { MdCelebration } from "react-icons/md";
 import { MdOutlineManageAccounts } from "react-icons/md";
 import { CgWebsite } from "react-icons/cg";
+import { ContactFormData, FormErrors } from '../../types/types';
 
 export default function DigitalInviteLanding() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [formData, setFormData] = useState<ContactFormData>({
+    fullName: '',
+    email: '',
+    serviceType: '',
+    message: '',
+  });
+  const [errors, setErrors] = useState<FormErrors>({});
+  const [isSubmitting, setIsSubmitting ] = useState<boolean>(false);
+  const [submitMessage, setSubmitMessage ] = useState<string>('');
 
-  const handleSubmit = () => {
-    alert('Please also reach out to us via, Whatsapp for fast response. Message sent! We\'ll get back to you soon.');
+  const validateForm = (): boolean => {
+    const newErrors: FormErrors = {};
+
+    if(!formData.fullName.trim()){
+      newErrors.fullName = 'Full Name is required';
+    }
+
+    if(!formData.email.trim()){
+      newErrors.email = 'Email is required';
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      newErrors.email = "Email is invalid";
+    }
+
+    if(!formData.serviceType){
+      newErrors.serviceType = 'Please selete a valid service type';
+    }
+
+    if(!formData.message.trim()){
+      newErrors.message = 'Message is required';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length == 0;
+
+  };
+
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+
+    if (errors[name as keyof FormErrors]) {
+      setErrors(prev => ({
+       ...prev,
+       [name]: undefined
+      }));
+    }
+
+  };
+
+  const handleSubmit = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+
+    if(!validateForm()) {
+      return;
+    }
+
+    setIsSubmitting(true);
+    setSubmitMessage('');
+
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type' : 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if(response.ok) {
+        setSubmitMessage('{`Please also reach out to us via, Whatsapp for fast response. Message sent successfully! We\'ll get back to you soon.`}');
+        setFormData({
+          fullName: '',
+          email: '',
+          serviceType: '',
+          message: '',
+        });
+      } else {
+        setSubmitMessage(data.error || 'Failed to send message. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      setSubmitMessage('An error occurred. Please try again later.');
+    } finally {
+      setIsSubmitting(false);
+    }
+
   };
 
   const services = [
@@ -542,38 +633,64 @@ export default function DigitalInviteLanding() {
                     </p>
                   </div>
                   
-                  <div className="space-y-4">
+                  <form onSubmit={handleSubmit} className="space-y-4">
                     <div className="relative">
                       <label className="font-playfair text-black/80 text-sm uppercase tracking-wider block mb-1">
                         Full Name
                       </label>
-                      <input 
-                        type="text" 
-                        className="w-[90%] px-4 py-3 border-2 border-black/20 rounded-none focus:outline-none focus:border-black bg-gray-50 font-playfair"
+                      <input
+                        type="text"
+                        name="fullName"
+                        value={formData.fullName}
+                        onChange={handleInputChange}
+                        className={`w-[90%] px-4 py-3 border-2 rounded-none focus:outline-none focus:border-black bg-gray-50 font-playfair ${
+                          errors.fullName ? 'border-red-500' : 'border-black/20'
+                        }`}
                       />
+                      {errors.fullName && (
+                        <p className="text-red-500 text-sm mt-1">{errors.fullName}</p>
+                      )}
                     </div>
                     
                     <div className="relative">
                       <label className="font-playfair text-black/80 text-sm uppercase tracking-wider block mb-1">
                         Email Address
                       </label>
-                      <input 
-                        type="email" 
-                        className="w-[90%] px-4 py-3 border-2 border-black/20 rounded-none focus:outline-none focus:border-black bg-gray-50 font-playfair"
+                      <input
+                        type="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleInputChange}
+                        className={`w-[90%] px-4 py-3 border-2 rounded-none focus:outline-none focus:border-black bg-gray-50 font-playfair ${
+                          errors.email ? 'border-red-500' : 'border-black/20'
+                        }`}
                       />
+                      {errors.email && (
+                        <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+                      )}
                     </div>
                     
                     <div className="relative">
                       <label className="font-playfair text-black/80 text-sm uppercase tracking-wider block mb-1">
                         Service Type
                       </label>
-                      <select className="w-[90%] px-4 py-3 border-2 border-black/20 rounded-none focus:outline-none focus:border-black bg-gray-50 font-playfair">
-                        <option>Select Service</option>
-                        <option>Wedding Invitation</option>
-                        <option>Event Invitation</option>
-                        <option>Corporate Event</option>
-                        <option>Other</option>
+                      <select 
+                        name="serviceType"
+                        value={formData.serviceType}
+                        onChange={handleInputChange}
+                        className={`w-[90%] px-4 py-3 border-2 rounded-none focus:outline-none focus:border-black bg-gray-50 font-playfair ${
+                          errors.serviceType ? 'border-red-500' : 'border-black/20'
+                        }`}
+                      >
+                        <option value="">Select Service</option>
+                        <option value="Wedding Invitation">Wedding Invitation</option>
+                        <option value="Event Invitation">Event Invitation</option>
+                        <option value="Corporate Event">Corporate Event</option>
+                        <option value="Other">Other</option>
                       </select>
+                      {errors.serviceType && (
+                        <p className="text-red-500 text-sm mt-1">{errors.serviceType}</p>
+                      )}
                     </div>
                     
                     <div className="relative">
@@ -582,20 +699,42 @@ export default function DigitalInviteLanding() {
                       </label>
                       <textarea 
                         rows={4}
-                        className="w-[90%] px-4 py-3 border-2 border-black/20 rounded-none focus:outline-none focus:border-black bg-gray-50 font-playfair"
+                        name="message"
+                        value={formData.message}
+                        onChange={handleInputChange}
                         placeholder="Tell us about your project..."
-                      ></textarea>
+                        className={`w-[90%] px-4 py-3 border-2 rounded-none focus:outline-none focus:border-black bg-gray-50 font-playfair ${
+                          errors.message ? 'border-red-500' : 'border-black/20'
+                        }`}
+                      />
+                      {errors.message && (
+                        <p className="text-red-500 text-sm mt-1">{errors.message}</p>
+                      )}
                     </div>
                     
+                    {submitMessage && (
+                      <div className={`p-3 rounded ${
+                        submitMessage.includes('successfully') 
+                          ? 'bg-green-100 text-green-700 border border-green-300' 
+                          : 'bg-red-100 text-red-700 border border-red-300'
+                      }`}>
+                        {submitMessage}
+                      </div>
+                    )}
+                    
                     <button 
-                      type="button" 
-                      onClick={handleSubmit}
-                      className="w-full bg-black text-white py-4 rounded-none font-playfair font-bold text-lg uppercase tracking-wider hover:bg-gray-800 transition-colors border-2 border-black"
+                      type="submit" 
+                      disabled={isSubmitting}
+                      className={`w-full py-4 rounded-none font-playfair font-bold text-lg uppercase tracking-wider transition-colors border-2 border-black ${
+                        isSubmitting 
+                          ? 'bg-gray-400 text-white cursor-not-allowed' 
+                          : 'bg-black text-white hover:bg-gray-800'
+                      }`}
                     >
-                      Send Message
+                      {isSubmitting ? 'Sending...' : 'Send Message'}
                     </button>
-                  </div>
-                  
+                  </form>
+
                   <div className="absolute top-0 right-0 w-8 h-8 bg-gray-200 transform rotate-45 translate-x-4 -translate-y-4 border-l border-b border-black/20"></div>
                 </div>
               </div>

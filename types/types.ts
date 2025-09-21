@@ -95,3 +95,20 @@ export type GuestStatusCounts = {
   ACCEPTED: number;
   DECLINED: number;
 };
+
+
+
+/// ----------- contact us types -----------//
+export interface ContactFormData {
+  fullName: string;
+  email: string;
+  serviceType: string;
+  message: string;
+}
+
+export interface FormErrors {
+  fullName?: string;
+  email?: string;
+  serviceType?: string;
+  message?: string;
+}
