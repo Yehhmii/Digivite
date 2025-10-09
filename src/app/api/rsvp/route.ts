@@ -12,47 +12,69 @@ type Body = {
   numberOfGuests?: number;
 };
 
+function env(name: string) {
+  return process.env[name] ?? '';
+}
+
 function makeQrToken() {
   return `q_${randomBytes(16).toString('hex')}`;
 }
 
-async function sendInvitationEmail(to: string, eventTitle: string, guestName: string | null, qrDataUrl: string) {
-  const transporter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST,
-    port: Number(process.env.SMTP_PORT || 587),
-    secure: false, // true for 465, false for other ports
-    // requireTLS: true, // forces TLS
-    auth: {
-      user: process.env.SMTP_USER,
-      pass: process.env.SMTP_PASS,
-    },
-  });
+async function createTransporter() {
+  const host = env('SMTP_HOST') || 'smtp.gmail.com';
+  const port = Number(env('SMTP_PORT') || 587);
+  const secure = (env('SMTP_SECURE') === 'true');
 
-  const cid = 'qr-code-' + Date.now();
+  return nodemailer.createTransport({
+    host,
+    port,
+    secure,
+    auth: {
+      user: env('SMTP_USER'),
+      pass: env('SMTP_PASS'),
+    },
+    tls: {
+      minVersion: 'TLSv1.2'
+    },
+    connectionTimeout: 20000,
+    greetingTimeout: 20000,
+    socketTimeout: 20000,
+  });
+}
+
+async function sendInvitationEmail(to: string, eventTitle: string, guestName: string | null, qrDataUrl: string) {
+  const transporter = await createTransporter();
+
+  const cid = `qr-${Date.now()}`;
+
+  const base64 = qrDataUrl.split(',')[1] ?? qrDataUrl;
+  const buffer = Buffer.from(base64, 'base64');
+
   const html = `
-    <div style="font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; color:#222;">
-      <h2 style="color:#722F37">${eventTitle}</h2>
+    <div style="font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Arial; color:#222;">
+      <h2 style="color:#722F37; margin-bottom:6px">${eventTitle}</h2>
       <p>Dear ${guestName ?? 'Guest'},</p>
       <p>Thank you for confirming your attendance. Please present the QR code below at the event entrance for verification.</p>
       <div style="margin:20px 0; text-align:center">
-        <img src="${cid}" alt="Invitation QR code" style="max-width:240px; height:auto;"/>
+        <img src="cid:${cid}" alt="Invitation QR code" style="max-width:260px; height:auto;"/>
       </div>
-      <p>If you have any questions, please reach out @08180541571.</p>
+      <p>If you have any questions, please reach out.</p>
       <p style="color:#777; font-size:12px">This email was sent from DigiVite.</p>
     </div>
   `;
 
   await transporter.sendMail({
-    from: process.env.EMAIL_FROM,
+    from: env('EMAIL_FROM') || env('SMTP_USER'),
     to,
     subject: `${eventTitle} — Your Invitation QR Code`,
     html,
-    attachments: [{
-      filename: 'invitation-qr.png',
-      content: qrDataUrl.split('base64,')[1], // Extract base64 content
-      encoding: 'base64',
-      cid: cid // Same CID referenced in the HTML
-    }]
+    attachments: [
+      {
+        filename: 'invitation-qr.png',
+        content: buffer,
+        cid,
+      },
+    ],
   });
 }
 
@@ -65,14 +87,47 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Missing slug or email' }, { status: 400 });
     }
 
-    // find guest by slug
-    const guest = await prisma.guest.findUnique({ where: { slug } });
+    const guest = await prisma.guest.findUnique({
+      where: { slug },
+      select: {
+        id: true,
+        fullName: true,
+        email: true,
+        phone: true,
+        numberOfGuests: true,
+        qrCodeToken: true,
+        rsvpAt: true,
+        rsvpStatus: true,
+        eventId: true,
+      },
+    });
+
     if (!guest) {
       return NextResponse.json({ error: 'Guest not found' }, { status: 404 });
     }
 
-    // generate qr token & data url
+    if (guest.qrCodeToken || guest.rsvpAt) {
+      const token = guest.qrCodeToken ?? `q_${Date.now().toString(36)}_${Math.random().toString(36).slice(2,8)}`;
+      const qrDataUrl = await QRCode.toDataURL(token, { type: 'image/png', margin: 1, width: 400 });
+
+      return NextResponse.json({
+        already: true,
+        guest: {
+          id: guest.id,
+          fullName: guest.fullName,
+          email: guest.email,
+          phone: guest.phone,
+          numberOfGuests: guest.numberOfGuests,
+          rsvpAt: guest.rsvpAt,
+          rsvpStatus: guest.rsvpStatus,
+          qrCodeToken: guest.qrCodeToken ?? token,
+          qrDataUrl,
+        }
+      }, { status: 200 });
+    }
+
     const qrToken = makeQrToken();
+    const qrDataUrl = await QRCode.toDataURL(qrToken, { type: 'image/png', margin: 1, width: 400 });
 
     // update guest record
     const updated = await prisma.guest.update({
@@ -83,20 +138,40 @@ export async function POST(req: Request) {
         numberOfGuests,
         status: 'ACCEPTED',
         qrCodeToken: qrToken,
+        rsvpAt: new Date(),
+        rsvpStatus: 'ACCEPTED',
+      },
+      select: {
+        id: true,
+        slug: true,
+        fullName: true,
+        email: true,
+        phone: true,
+        numberOfGuests: true,
+        qrCodeToken: true,
+        rsvpAt: true,
+        rsvpStatus: true,
       },
     });
 
-    // generate QR code as data URL (PNG)
-    const qrDataUrl = await QRCode.toDataURL(qrToken, { type: 'image/png', margin: 1, width: 400 });
 
     // fetch event title (for email)
     const event = await prisma.event.findUnique({ where: { id: guest.eventId }, select: { title: true }});
-    const eventTitle = event?.title ?? 'Your Event';
+    const eventTitle = event?.title ?? 'The Event';
 
-    // send email (throws on failure)
-    await sendInvitationEmail(email, eventTitle, guest.fullName ?? null, qrDataUrl);
+    try {
+      await sendInvitationEmail(email, eventTitle, updated.fullName ?? null, qrDataUrl);
+    } catch (e) {
+      console.warn('[rsvp] sendInvitationEmail failed (logged, RSVP saved):', e);
+    }
 
-    return NextResponse.json({ ok: true, guest: { id: updated.id, slug: updated.slug } });
+    return NextResponse.json({
+      already: false,
+      guest: {
+        ...updated,
+        qrDataUrl,
+      },
+    }, { status: 201 });
   } catch (err: unknown) {
     if (err instanceof Error) {
       console.error('rsvp Error:', err);

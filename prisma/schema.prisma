@@ -36,8 +36,12 @@ model Guest {
   phone          String?
   status         RSVPStatus @default(PENDING)
   numberOfGuests Int        @default(1)
-  qrCodeToken    String     @unique
+  qrCodeToken    String?     @unique
   slug           String?    @unique
+
+  rsvpAt       DateTime?
+  rsvpStatus   String?
+  
   checkedIn      Boolean    @default(false)
   checkInTime    DateTime?
 

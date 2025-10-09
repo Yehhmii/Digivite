@@ -1,5 +1,5 @@
 "use client";
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { GiGlassCelebration } from "react-icons/gi";
 
 interface AttendanceModalProps {
@@ -16,17 +16,74 @@ export default function AttendanceModal({ isOpen, onClose, slug }: AttendanceMod
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [serverChecked, setServerChecked] = useState(false);
+  const [qrDataUrl, setQrDataUrl] = useState<string | null>(null);
+  const [submitted, setSubmitted] = useState(false);
 
-  if (!isOpen) return null;
+  const submittingRef = useRef(false);
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    setError(null);
+    setQrDataUrl(null);
+    setServerChecked(false);
+    setSubmitted(false);
+    setSent(false);
+
+    const ac = new AbortController();
+    (async () => {
+      try {
+        const res = await fetch(`/api/guest/status?slug=${encodeURIComponent(slug)}`, {
+          method: "GET",
+          signal: ac.signal,
+        });
+
+        if (!res.ok) {
+          return;
+        }
+
+        const data = (await res.json());
+
+        if (data?.guest) {
+          if (data.guest.email) setEmail(data.guest.email);
+          if (data.guest.phone) setPhone(data.guest.phone);
+          if (data.guest.qrDataUrl) {
+            setQrDataUrl(data.guest.qrDataUrl);
+            setServerChecked(true);
+            setSubmitted(true);
+          } else if (data.guest.rsvpAt || data.guest.qrCodeToken) {
+            setServerChecked(true);
+            setSubmitted(true);
+            if (data.guest.qrDataUrl) setQrDataUrl(data.guest.qrDataUrl);
+          }
+        }
+      } catch (err) {
+        if ((err as any)?.name === "AbortError") return;
+        console.warn("Failed to fetch RSVP status", err);
+      }
+    })();
+
+    return () => ac.abort();
+  }, [isOpen, slug]);
+
+  function isValidEmail(e: string) {
+    return /\S+@\S+\.\S+/.test(e);
+  }
 
   const handleSubmit = async () => {
+    if (submittingRef.current) return;
+
     setError(null);
-    if (!email) {
-      setError('Please enter your email.');
+
+    if (!email || !isValidEmail(email)) {
+      setError("Please enter a valid email address.");
       return;
     }
 
+    submittingRef.current = true;
     setLoading(true);
+    
     try {
       const res = await fetch('/api/rsvp', {
         method: 'POST',
@@ -39,13 +96,22 @@ export default function AttendanceModal({ isOpen, onClose, slug }: AttendanceMod
         }),
       });
 
-      const data = await res.json();
+      const data = await res.json().catch(() => ({}));
       if (!res.ok) {
-        setError(data?.error || 'Failed to confirm. Try again later.');
+        submittingRef.current = false;
         setLoading(false);
+        setError(data?.error || 'Failed to confirm. Try again later.');
         return;
       }
 
+      const guestData = (data?.guest ?? data) as any;
+
+      if (guestData?.qrDataUrl) {
+        setQrDataUrl(guestData.qrDataUrl);
+      }
+
+      setServerChecked(true);
+      setSubmitted(true);
       setSent(true);
       setLoading(false);
 
@@ -53,11 +119,15 @@ export default function AttendanceModal({ isOpen, onClose, slug }: AttendanceMod
         setSent(false);
         onClose();
       }, 4500);
-    } catch (e: any) {
-      setError(e?.message || 'Network error');
+    } catch (err: any) {
+      console.error("rsvp Error:", err);
+      submittingRef.current = false;
       setLoading(false);
+      setError(err?.message || "Network error");
     }
   };
+
+  if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate__animated animate__fadeIn">
@@ -91,6 +161,13 @@ export default function AttendanceModal({ isOpen, onClose, slug }: AttendanceMod
                   </p>
                 </div>
 
+                {qrDataUrl && (
+                  <div className="text-center mb-4">
+                    <p className="text-xs text-white/80 mb-2">Your QR code (already sent)</p>
+                    <img src={qrDataUrl} alt="Your RSVP QR" className="mx-auto w-40 h-40 object-contain rounded-md border" />
+                  </div>
+                )}
+
                 <div className="space-y-3 sm:space-y-4">
                   <div>
                     <label className="block text-[#D4AF37] font-dm-serif text-xs sm:text-sm mb-2 tracking-wide">
@@ -102,6 +179,7 @@ export default function AttendanceModal({ isOpen, onClose, slug }: AttendanceMod
                       className="w-[80%] p-3 sm:p-4 bg-[#1a1a1a] border-2 border-[#D4AF37]/30 rounded-none font-dm-serif text-white placeholder-white/50 focus:outline-none focus:border-[#D4AF37] transition-all duration-300 newspaper-input text-sm sm:text-base"
                       type="email"
                       placeholder="you@example.com"
+                      disabled={submitted || serverChecked}
                     />
                   </div>
 
@@ -115,6 +193,7 @@ export default function AttendanceModal({ isOpen, onClose, slug }: AttendanceMod
                       className="w-[80%] p-3 sm:p-4 bg-[#1a1a1a] border-2 border-[#D4AF37]/30 rounded-none font-dm-serif text-white placeholder-white/50 focus:outline-none focus:border-[#D4AF37] transition-all duration-300 newspaper-input text-sm sm:text-base"
                       type="tel"
                       placeholder="08158..."
+                      disabled={submitted || serverChecked}
                     />
                   </div>
 
@@ -152,12 +231,16 @@ export default function AttendanceModal({ isOpen, onClose, slug }: AttendanceMod
                     <button
                       onClick={handleSubmit}
                       type="button"
-                      disabled={loading}
-                      className="luxury-button-primary w-[50%] sm:w-auto px-6 sm:px-8 py-2 sm:py-3 bg-transparent border-2 border-[#D4AF37] text-[#D4AF37] font-dm-serif text-xs sm:text-sm tracking-[0.1em] uppercase transition-all duration-500 hover:text-black disabled:opacity-50 overflow-hidden relative group"
+                      disabled={loading || submitted || serverChecked}
+                      className={`luxury-button-primary w-[50%] sm:w-auto px-6 sm:px-8 py-2 sm:py-3 bg-transparent border-2 border-[#D4AF37] text-[#D4AF37] font-dm-serif text-xs sm:text-sm tracking-[0.1em] uppercase transition-all duration-500 hover:text-black disabled:opacity-50 overflow-hidden relative group ${
+                        loading || submitted || serverChecked
+                          ? "bg-gray-400 cursor-not-allowed"
+                          : "bg-[#D4AF37]  hover:scale-[1.01] transition"
+                      }`}
                     >
                       <div className="absolute inset-0 bg-[#D4AF37] transform -translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-in-out"></div>
                       <span className="relative z-10">
-                        {loading ? 'Sending...' : 'Confirm Attendance'}
+                        {loading ? "Sending..." : submitted || serverChecked ? "Confirmed" : "Confirm Attendance"}
                       </span>
                     </button>
                   </div>
@@ -173,6 +256,13 @@ export default function AttendanceModal({ isOpen, onClose, slug }: AttendanceMod
                   An email has been sent to <span className="text-[#D4AF37] font-semibold break-words">{email}</span>. 
                   Present this QR on the day for verification — we can't wait to see you!
                 </p>
+
+                {qrDataUrl && (
+                  <div className="mt-4">
+                    <img src={qrDataUrl} alt="QR code" className="mx-auto w-44 h-44 object-contain rounded-md border" />
+                  </div>
+                )}
+
                 <div className="flex justify-center">
                   <button 
                     onClick={() => { setSent(false); onClose(); }} 

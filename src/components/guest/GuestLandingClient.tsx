@@ -28,6 +28,7 @@ type Props = {
 export default function GuestLandingClient({ guest, eventTitle, eventSlug }: Props) {
   const router = useRouter();
   const [isVisible, setIsVisible] = useState(false);
+  const [isOpening, setIsOpening] = useState(false);
 
   useEffect(() => {
     // Trigger animation on component mount
@@ -35,6 +36,7 @@ export default function GuestLandingClient({ guest, eventTitle, eventSlug }: Pro
   }, []);
 
   const handleClick = () => {
+    setIsOpening(true);
     router.push(`/guest/${eventSlug}/rsvp`);
   };
 
@@ -126,20 +128,22 @@ export default function GuestLandingClient({ guest, eventTitle, eventSlug }: Pro
                 </div>
               </div>
                 
-              <div className="mt-12">
-                <a 
+              <div className="mt-12 cursor-pointer">
+                {/* <a 
                   href={`/guest/${eventSlug}/rsvp`} 
                   className="inline-block text-decoration-none"
-                >
+                > */}
                   <button 
-                    className="group relative px-12 py-4 bg-transparent border-2 border-[#D4AF37] text-[#D4AF37] font-dm-serif text-lg tracking-[0.1em] uppercase transition-all duration-500 hover:bg-[#D4AF37] hover:text-black overflow-hidden"
-                    type="button" 
+                    className="group relative px-12 py-4 cursor-pointer bg-transparent border-2 border-[#D4AF37] text-[#D4AF37] font-dm-serif text-lg tracking-[0.1em] uppercase transition-all duration-500 hover:bg-[#D4AF37] hover:text-black overflow-hidden"
+                    type="button"
+                    onClick={handleClick}
+                    disabled={isOpening}
                     aria-label="Open invitation"
                   >
                     <div className="absolute inset-0 bg-[#D4AF37] transform -translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-in-out"></div>
-                    <span className="relative z-10 font-light">Open Invitation</span>
+                    <span className="relative z-10 font-light">{isOpening ? 'Opening...' : 'Open Invitation'}</span>
                   </button>
-                </a>
+                {/* </a> */}
               </div>
             </div>
 

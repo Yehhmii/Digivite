@@ -160,14 +160,14 @@ export async function POST(req: Request) {
     const baseSlug = rawFullName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '').slice(0, 60);
     const slug = await generateUniqueGuestSlug(`${baseSlug}-${Math.random().toString(36).substring(2, 6)}`);
 
-    const placeholderToken = `pending_${nanoid(12)}`;
+    // const placeholderToken = `pending_${nanoid(12)}`;
 
     const guest = await prisma.guest.create({
       data: {
         fullName: rawFullName,
         slug,
         eventId,
-        qrCodeToken: placeholderToken
+        // qrCodeToken: placeholderToken
       }
     });
 
