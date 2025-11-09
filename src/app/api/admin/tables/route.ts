@@ -67,7 +67,7 @@ export async function POST(req: Request) {
     if (!adminId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
     const body = await req.json();
-    const { eventId, number: rawNumber, capacity = 8 } = body;
+    const { eventId, number: rawNumber, capacity = 10 } = body;
     if (!eventId) return NextResponse.json({ error: 'eventId required' }, { status: 400 });
 
     // optional verify event ownership

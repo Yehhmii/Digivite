@@ -180,52 +180,94 @@ export default function RSVPPageClient({
               <InvitationCard />
             </div>
 
-            <div className="mt-6 flex flex-col sm:flex-row gap-4 justify-center items-stretch px-4">
+            <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
+                <button
+                  onClick={openAttendanceModal}
+                  className="group relative px-10 py-4 bg-transparent border-2 border-[#D4AF37] text-[#D4AF37] font-dm-serif text-lg tracking-[0.1em] uppercase transition-all duration-500 hover:text-black overflow-hidden min-w-[220px] luxury-button"
+                >
+                  <div className="absolute inset-0 bg-[#D4AF37] transform -translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-in-out"></div>
+                  <span className="relative z-10 font-light">Click to reserve</span>
+                  
+                  <div className="absolute inset-0 bg-[#D4AF37]/20 opacity-0 group-hover:opacity-100 blur-md transition-opacity duration-500 -z-10"></div>
+                </button>
+            </div>
+
+            <div className="space-y-6 animate__animated animate__fadeIn animate__delay-2s">
+              <h2 className="text-2xl md:text-3xl font-playfair text-[#D4AF37] font-light">
+                Colors of the Day
+              </h2>
+              <div className="w-24 h-0.5 bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent mx-auto"></div>
+              
+              <div className="flex flex-wrap justify-center items-center gap-6 md:gap-8 px-4">
+                <div className="group flex flex-col items-center gap-3 animate__animated animate__zoomIn" style={{ animationDelay: '0.3s' }}>
+                  <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-[#D4AF37] shadow-xl shadow-[#D4AF37]/50 group-hover:scale-110 transition-transform duration-300 ring-4 ring-white/10"></div>
+                  <span className="text-white/80 font-dm-serif text-sm">Gold</span>
+                </div>
+
+                <div className="group flex flex-col items-center gap-3 animate__animated animate__zoomIn" style={{ animationDelay: '0.5s' }}>
+                  <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-[#722F37] shadow-xl shadow-[#722F37]/50 group-hover:scale-110 transition-transform duration-300 ring-4 ring-white/10"></div>
+                  <span className="text-white/80 font-dm-serif text-sm">Wine</span>
+                </div>
+
+                <div className="group flex flex-col items-center gap-3 animate__animated animate__zoomIn" style={{ animationDelay: '0.7s' }}>
+                  <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-[#301934] shadow-xl shadow-[#301934]/50 group-hover:scale-110 transition-transform duration-300 ring-4 ring-white/10"></div>
+                  <span className="text-white/80 font-dm-serif text-sm">Deep Purple</span>
+                </div>
+
+                <div className="group flex flex-col items-center gap-3 animate__animated animate__zoomIn" style={{ animationDelay: '0.9s' }}>
+                  <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-[#C8A2C8] shadow-xl shadow-[#C8A2C8]/50 group-hover:scale-110 transition-transform duration-300 ring-4 ring-white/10"></div>
+                  <span className="text-white/80 font-dm-serif text-sm">Lilac</span>
+                </div>
+
+                <div className="group flex flex-col items-center gap-3 animate__animated animate__zoomIn" style={{ animationDelay: '1.1s' }}>
+                  <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-[#FADADD] shadow-xl shadow-[#FADADD]/50 group-hover:scale-110 transition-transform duration-300 ring-4 ring-white/10"></div>
+                  <span className="text-white/80 font-dm-serif text-sm">Onion Pink</span>
+                </div>
+              </div>
+            </div>
+
+            <p className="text-xl md:text-2xl text-white/90 font-playfair font-light">
+              Please Click on the cards below to get directions to the venues
+            </p>
+
+
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-stretch px-4">
               {/* <MapButton
                 href={getGoogleMapsUrl(traditionalLocation)}
                 title="Traditional Wedding"
                 subtitle="Obudu recourse Hotels and gardens - 2:00 PM"
                 Icon={FaOldRepublic}
               /> */}
-
+              
               <MapButton
                 href={getGoogleMapsUrl(churchLocation)}
                 title="Ceremony (Church)"
-                subtitle="Christ The King Catholic Church, Kurudu, Abuja"
+                subtitle="Christ The King Catholic Church, Kurudu, Abuja - 10:00 AM"
                 Icon={FaChurch}
               />
 
               <MapButton
                 href={getGoogleMapsUrl(receptionLocation)}
                 title="Reception"
-                subtitle="Yuby Resort — 1:00 PM"
+                subtitle="Yuby Resort Orozo Abuja — 1:00 PM"
                 Icon={FaUtensils}
               />
             </div>
 
             <div className="space-y-8">
-              <p className="text-xl md:text-2xl text-white/90 font-playfair font-light">
+              {/* <p className="text-xl md:text-2xl text-white/90 font-playfair font-light">
                 Please let us know if you can attend
-              </p>
+              </p> */}
               
               <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
-                <button
-                  onClick={openAttendanceModal}
-                  className="group relative px-10 py-4 bg-transparent border-2 border-[#D4AF37] text-[#D4AF37] font-dm-serif text-lg tracking-[0.1em] uppercase transition-all duration-500 hover:text-black overflow-hidden min-w-[220px] luxury-button"
-                >
-                  <div className="absolute inset-0 bg-[#D4AF37] transform -translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-in-out"></div>
-                  <span className="relative z-10 font-light">I'll be there</span>
-                  
-                  <div className="absolute inset-0 bg-[#D4AF37]/20 opacity-0 group-hover:opacity-100 blur-md transition-opacity duration-500 -z-10"></div>
-                </button>
 
                 <button
                   onClick={openNotAttendingModal}
                   className="group relative px-10 py-4 bg-transparent border-2 border-[#722F37] text-[#722F37] font-dm-serif text-lg tracking-[0.1em] uppercase transition-all duration-500 hover:text-white overflow-hidden min-w-[220px] luxury-button"
                 >
                   <div className="absolute inset-0 bg-[#722F37] transform -translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-in-out"></div>
-                  <span className="relative z-10 font-light">Can't make it</span>
-                  
+                  <span className="relative z-10 font-light text-[#D4AF37]">Can't make it</span>
+
                   <div className="absolute inset-0 bg-[#722F37]/20 opacity-0 group-hover:opacity-100 blur-md transition-opacity duration-500 -z-10"></div>
                 </button>
               </div>

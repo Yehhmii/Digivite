@@ -11,7 +11,7 @@ export default function Header({ eventTitle = "M'J FOREVER25", className = "" }:
       <div className="max-w-4xl mx-auto text-center px-4">
         <div className="flex items-center justify-center mb-3">
           <h1 className="text-2xl md:text-3xl lg:text-4xl font-playfair text-[#D4AF37] font-semibold tracking-wider">
-            {eventTitle}
+            OURFOREVERBEGINS
           </h1>
         </div>
         

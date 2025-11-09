@@ -48,7 +48,7 @@ export default async function GuestLandingPage({ params }: Props) {
   return (
     <div className="min-h-screen bg-black overflow-x-hidden">
       <div className="relative min-h-screen bg-cover bg-center bg-no-repeat" 
-           style={{ backgroundImage: "url('/couples-hero.jpg')" }}>
+           style={{ backgroundImage: "url('/guestbackgroud1.png')" }}>
         {/* Dark overlay */}
         <div className="absolute inset-0 bg-black/60 backdrop-blur-[1px]"></div>
         
@@ -59,10 +59,10 @@ export default async function GuestLandingPage({ params }: Props) {
             
             <div className="text-center mb-12 space-y-4 animate__animated animate__fadeInUp">
               <h1 className="text-3xl md:text-5xl lg:text-6xl font-playfair text-white font-light leading-tight">
-                You have been invited to
+                You're invited to
               </h1>
-              <h2 className="text-3xl md:text-4xl lg:text-5xl font-dm-serif text-[#D4AF37] font-light tracking-wide">
-                M'J FOREVER25
+              <h2 className="text-2xl md:text-4xl lg:text-5xl font-dm-serif text-[#D4AF37] font-light tracking-wide">
+                The Wedding Of Mary-Joy & Olajide
               </h2>
             </div>
 
