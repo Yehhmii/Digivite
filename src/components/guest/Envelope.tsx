@@ -19,7 +19,7 @@ export default function Envelope({ guestName = "Beloved Guest", onOpen }: Envelo
       <div className="relative w-72 md:w-96 h-44 md:h-56">
         <div className={`absolute inset-0 rounded-xl border border-white/6 backdrop-blur-md bg-white/5 transition-opacity duration-500 ${open ? "opacity-100" : "opacity-0 pointer-events-none"} p-6 flex flex-col justify-between`}>
           <div>
-            <h3 className="font-playfair text-xl md:text-2xl text-[#EDE7D7]">M'J FOREVER25</h3>
+            <h3 className="font-playfair text-xl md:text-2xl text-[#EDE7D7]">OURFOREVERBEGINS</h3>
             <p className="mt-2 text-sm md:text-base font-dm-serif text-[#DDD6C2] leading-relaxed">We would be honoured by your presence as we celebrate our union.</p>
           </div>
 
