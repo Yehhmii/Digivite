@@ -163,7 +163,7 @@ export default function Carousel({
               }}
             >
               <div className={`rounded-lg overflow-hidden border border-white/6`} >
-                <img src={src} alt={`slide-${idx}`} className="w-full h-36 md:h-44 object-cover block" />
+                <img src={src} alt={`slide-${idx}`} className="w-full h-44 md:h-54 object-cover block" />
               </div>
             </div>
           );
