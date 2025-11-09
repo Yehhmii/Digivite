@@ -38,11 +38,11 @@ export default async function GuestLandingPage({ params }: Props) {
   const eventTitle = event?.title ?? 'the event';
 
   const carouselImages = [
-    '/couple-1.jpg',
-    '/couple-2.jpg',
-    '/couple-3.jpg',
-    '/couple-4.jpg',
-    '/couple-5.jpg'
+    '/couple-1.jpeg',
+    '/couple-2.jpeg',
+    '/couple-3.jpeg',
+    '/couple-4.jpeg',
+    '/couple-5.jpeg'
   ];
 
   return (

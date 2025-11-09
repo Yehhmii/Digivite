@@ -6,7 +6,7 @@ import Footer from '@/components/Footer';
 import AttendanceModal from './AttendanceModal';
 import NotAttendingModal from './NotAttendingModal';
 import { FaClover } from "react-icons/fa6";
-import { FaHeartbeat, FaHandHoldingHeart, FaChurch, FaUtensils, FaMapMarkerAlt } from "react-icons/fa";
+import { FaHeartbeat, FaHandHoldingHeart, FaChurch, FaUtensils, FaMapMarkerAlt, FaOldRepublic } from "react-icons/fa";
 import { GiBigDiamondRing } from "react-icons/gi";
 
 const InvitationCard = () => {
@@ -68,8 +68,9 @@ export default function RSVPPageClient({
   const [showAttendanceModal, setShowAttendanceModal] = useState(false);
   const [showNotAttendingModal, setShowNotAttendingModal] = useState(false);
 
-  const churchLocation = "St. Mary's Church, Lagos, Nigeria"; // or "6.5244,3.3792"
-  const receptionLocation = "Royal Banquet Hall, Lagos, Nigeria"; // or "6.5000,3.3800"
+  const churchLocation = "Christ the King Parish (CKC) Kurudu Abuja";
+  const receptionLocation = "Yuby Resort"; // or "6.5000,3.3800"
+  // const traditionalLocation = "Obudu recourse Hotels and gardens"
 
   function getGoogleMapsUrl(location: string) {
     // Use "search" so it works with addresses or coordinates
@@ -180,17 +181,24 @@ export default function RSVPPageClient({
             </div>
 
             <div className="mt-6 flex flex-col sm:flex-row gap-4 justify-center items-stretch px-4">
+              {/* <MapButton
+                href={getGoogleMapsUrl(traditionalLocation)}
+                title="Traditional Wedding"
+                subtitle="Obudu recourse Hotels and gardens - 2:00 PM"
+                Icon={FaOldRepublic}
+              /> */}
+
               <MapButton
                 href={getGoogleMapsUrl(churchLocation)}
                 title="Ceremony (Church)"
-                subtitle="St. Mary's Church — 10:00 AM" // optional display text
+                subtitle="Christ The King Catholic Church, Kurudu, Abuja"
                 Icon={FaChurch}
               />
 
               <MapButton
                 href={getGoogleMapsUrl(receptionLocation)}
                 title="Reception"
-                subtitle="Royal Banquet Hall — 1:00 PM"
+                subtitle="Yuby Resort — 1:00 PM"
                 Icon={FaUtensils}
               />
             </div>
