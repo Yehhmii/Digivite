@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   title: "Digivite",
   description: "Getting the best with comfort.",
   openGraph: {
-    title: "Digivite",
+    title: "#OURFOREVERBEGINS",
     description: "You are invited to celebrate with us.",
     url: "https://digivite-pro.vercel.app/",
     siteName: "Digivite",
