@@ -1,9 +1,10 @@
-// src/app/api/rsvp/route.ts
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import QRCode from 'qrcode';
 import nodemailer from 'nodemailer';
 import { randomBytes } from 'crypto';
+import path from 'path';
+import fs from 'fs';
 
 type Body = {
   slug: string;
@@ -45,36 +46,72 @@ async function createTransporter() {
 async function sendInvitationEmail(to: string, eventTitle: string, guestName: string | null, qrDataUrl: string) {
   const transporter = await createTransporter();
 
-  const cid = `qr-${Date.now()}`;
+  const qrCid = `qr-${Date.now()}`;
+  const programCid = `program-${Date.now()}`;
 
-  const base64 = qrDataUrl.split(',')[1] ?? qrDataUrl;
-  const buffer = Buffer.from(base64, 'base64');
+  // Convert QR code data URL to buffer
+  const qrBase64 = qrDataUrl.split(',')[1] ?? qrDataUrl;
+  const qrBuffer = Buffer.from(qrBase64, 'base64');
+
+  // Read the program image from public folder
+  const programPath = path.join(process.cwd(), 'public', 'program.png');
+  let programBuffer: Buffer | null = null;
+  let programExists = false;
+
+  try {
+    programBuffer = fs.readFileSync(programPath);
+    programExists = true;
+  } catch (err) {
+    console.warn('[sendInvitationEmail] program.png not found at:', programPath);
+  }
 
   const html = `
-    <div style="font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Arial; color:#222;">
+    <div style="font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Arial; color:#222; max-width:600px; margin:0 auto;">
       <h2 style="color:#722F37; margin-bottom:6px">${eventTitle}</h2>
       <p>Dear ${guestName ?? 'Guest'},</p>
       <p>Thank you for confirming your attendance. Please present the QR code below at the event entrance for verification.</p>
+      
       <div style="margin:20px 0; text-align:center">
-        <img src="cid:${cid}" alt="Invitation QR code" style="max-width:260px; height:auto;"/>
+        <img src="cid:${qrCid}" alt="Invitation QR code" style="max-width:260px; height:auto; border: 2px solid #722F37; border-radius: 8px; padding: 10px;"/>
       </div>
-      <p>If you have any questions, please reach out.</p>
-      <p style="color:#777; font-size:12px">This email was sent from DigiVite.</p>
-    </div>
+      
+      ${programExists ? `
+      <div style="margin:30px 0;">
+        <h3 style="color:#722F37; margin-bottom:10px;">Event Program</h3>
+        <div style="text-align:center">
+          <img src="cid:${programCid}" alt="Event Program" style="max-width:100%; height:auto; border: 1px solid #ddd; border-radius: 8px;"/>
+        </div>
+      </div>
+      ` : ''}
+      
+      <p style="margin-top:20px;">If you have any questions, please reach out.</p>
+      <p style="color:#777; font-size:12px; margin-top:30px; border-top:1px solid #eee; padding-top:10px;">This email was sent from DigiVite.</p>
+    </div> 
   `;
+
+  const attachments: any[] = [
+    {
+      filename: 'invitation-qr.png',
+      content: qrBuffer,
+      cid: qrCid,
+    },
+  ];
+
+  // Add program image if it exists
+  if (programExists && programBuffer) {
+    attachments.push({
+      filename: 'event-program.png',
+      content: programBuffer,
+      cid: programCid,
+    });
+  }
 
   await transporter.sendMail({
     from: env('EMAIL_FROM') || env('SMTP_USER'),
     to,
     subject: `${eventTitle} — Your Invitation QR Code`,
     html,
-    attachments: [
-      {
-        filename: 'invitation-qr.png',
-        content: buffer,
-        cid,
-      },
-    ],
+    attachments,
   });
 }
 
@@ -153,7 +190,6 @@ export async function POST(req: Request) {
         rsvpStatus: true,
       },
     });
-
 
     // fetch event title (for email)
     const event = await prisma.event.findUnique({ where: { id: guest.eventId }, select: { title: true }});
