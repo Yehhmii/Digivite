@@ -67,7 +67,7 @@ async function sendInvitationEmail(to: string, eventTitle: string, guestName: st
 
   const html = `
     <div style="font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Arial; color:#222; max-width:600px; margin:0 auto;">
-      <h2 style="color:#722F37; margin-bottom:6px">${eventTitle}</h2>
+      <h2 style="color:#722F37; margin-bottom:6px">OURFOREVERBEGINS</h2>
       <p>Dear ${guestName ?? 'Guest'},</p>
       <p>Thank you for confirming your attendance. Please present the QR code below at the event entrance for verification.</p>
       
