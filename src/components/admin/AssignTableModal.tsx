@@ -279,15 +279,15 @@ export default function AssignTableModal({
             </div>
 
             {showCreateTable && (
-              <div className="mb-4 p-4 bg-indigo-50 border-2 border-indigo-200 rounded-xl">
-                <div className="flex gap-2">
+              <div className="mb-4 p-3 sm:p-4 bg-indigo-50 border-2 border-indigo-200 rounded-xl">
+                <div className="flex flex-col sm:flex-row gap-2">
                   <input
                     type="number"
                     min={1}
                     placeholder="Table #"
                     value={newTableNumber}
                     onChange={(e) => setNewTableNumber(e.target.value)}
-                    className="flex-1 px-3 py-2 border-2 border-indigo-300 rounded-lg focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none"
+                    className="flex-1 px-3 py-2 border-2 border-indigo-300 rounded-lg focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none text-base"
                   />
                   <input
                     type="number"
@@ -295,12 +295,12 @@ export default function AssignTableModal({
                     placeholder="Capacity"
                     value={newTableCapacity}
                     onChange={(e) => setNewTableCapacity(e.target.value)}
-                    className="flex-1 px-3 py-2 border-2 border-indigo-300 rounded-lg focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none"
+                    className="flex-1 px-3 py-2 border-2 border-indigo-300 rounded-lg focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none text-base"
                   />
                   <button
                     onClick={createTable}
                     disabled={loading}
-                    className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-medium disabled:opacity-50"
+                    className="w-[90%] sm:w-auto px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-medium disabled:opacity-50"
                   >
                     Create
                   </button>
@@ -317,7 +317,7 @@ export default function AssignTableModal({
                 return (
                   <label
                     key={t.id}
-                    className={`flex items-center justify-between p-4 rounded-lg cursor-pointer transition-all ${
+                    className={`flex flex-col sm:flex-row sm:items-center sm:justify-between p-3 sm:p-4 rounded-lg cursor-pointer transition-all ${
                       disabled
                         ? 'opacity-40 cursor-not-allowed bg-gray-100'
                         : isSelected
@@ -332,17 +332,17 @@ export default function AssignTableModal({
                         checked={isSelected}
                         onChange={() => !disabled && setSelectedTable(t.id)}
                         disabled={disabled}
-                        className="w-5 h-5 text-indigo-600 focus:ring-indigo-500"
+                        className="w-5 h-5 text-indigo-600 focus:ring-indigo-500 flex-shrink-0"
                       />
-                      <div>
+                      <div className="flex-1 min-w-0">
                         <div className="font-semibold text-gray-900">Table {t.number}</div>
-                        <div className="text-sm text-gray-600">
+                        <div className="text-xs sm:text-sm text-gray-600">
                           {t.seatsUsed}/{t.capacity} seats occupied
                           {disabled && <span className="text-red-600 ml-1">(Full)</span>}
                         </div>
                       </div>
                     </div>
-                    <div className={`text-sm font-medium ${disabled ? 'text-red-600' : 'text-green-600'}`}>
+                    <div className={`text-sm font-medium mt-2 sm:mt-0 ml-8 sm:ml-0 ${disabled ? 'text-red-600' : 'text-green-600'}`}>
                       {seatsLeft} left
                     </div>
                   </label>
