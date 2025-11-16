@@ -123,7 +123,7 @@ export default function NotAttendingModal({ isOpen, onClose, slug, guestName }: 
                     <div className="space-y-1 sm:space-y-2 text-xs sm:text-sm">
                       <div className="flex justify-between items-center border-b border-[#D4AF37]/20 pb-1">
                         <span className="text-white/70">Account Number:</span>
-                        <span className="text-[#D4AF37] font-mono break-all">2037620118</span>
+                        <span className="text-[#D4AF37] font-mono break-all">0053092590</span>
                       </div>
                       <div className="flex justify-between items-center border-b border-[#D4AF37]/20 pb-1">
                         <span className="text-white/70">Account Name:</span>
@@ -131,7 +131,7 @@ export default function NotAttendingModal({ isOpen, onClose, slug, guestName }: 
                       </div>
                       <div className="flex justify-between items-center">
                         <span className="text-white/70">Account Bank:</span>
-                        <span className="text-[#D4AF37] break-words">Kuda Bank</span>
+                        <span className="text-[#D4AF37] break-words">Access Bank</span>
                       </div>
                     </div>
                   </div>
