@@ -242,14 +242,14 @@ export default function RSVPPageClient({
               <MapButton
                 href={getGoogleMapsUrl(churchLocation)}
                 title="Ceremony (Church)"
-                subtitle="Christ The King Catholic Church, Kurudu, Abuja - 10:00 AM"
+                subtitle="Christ The King Catholic Church, Kurudu, Abuja - 12:00 PM"
                 Icon={FaChurch}
               />
 
               <MapButton
                 href={getGoogleMapsUrl(receptionLocation)}
                 title="Reception"
-                subtitle="Yuby Resort Orozo Abuja — 1:00 PM"
+                subtitle="Yuby Resort Orozo Abuja — 2:00 PM"
                 Icon={FaUtensils}
               />
             </div>
