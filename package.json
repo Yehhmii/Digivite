@@ -16,7 +16,7 @@
     "jsqr": "^1.4.0",
     "lucide-react": "^0.543.0",
     "nanoid": "^5.1.5",
-    "next": "15.4.6",
+    "next": "15.4.10",
     "next-auth": "^4.24.11",
     "nextjs-toploader": "^3.8.16",
     "nodemailer": "^6.9.1",
