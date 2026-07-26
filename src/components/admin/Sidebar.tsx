@@ -2,6 +2,15 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { createContext, useContext, useState, useEffect } from 'react';
+import { 
+  LayoutDashboard, 
+  UserCheck, 
+  Users, 
+  Settings, 
+  QrCode, 
+  X,
+  Sparkles
+} from 'lucide-react';
 
 const SidebarContext = createContext<{
   isOpen: boolean;
@@ -42,7 +51,7 @@ export function SidebarProvider({ children }: { children: React.ReactNode }) {
       {children}
       {isMobile && isOpen && (
         <div 
-          className="fixed inset-0 bg-opacity-50 z-40 md:hidden"
+          className="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-40 md:hidden transition-opacity"
           onClick={close}
         />
       )}
@@ -55,10 +64,11 @@ export default function Sidebar() {
   const { isOpen, close } = useSidebar();
 
   const navItems = [
-    { href: '/admin/dashboard', label: 'Dashboard', icon: '📊' },
-    { href: '/admin/checkedIn', label: 'Events-CheckIns', icon: '🎉' },
-    { href: '/admin/guests', label: 'Guests', icon: '👥' },
-    { href: '/admin/settings', label: 'Settings', icon: '⚙️' },
+    { href: '/admin/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+    { href: '/admin/checkedIn', label: 'Events & Check-Ins', icon: UserCheck },
+    { href: '/admin/guests', label: 'Guests', icon: Users },
+    { href: '/admin/scanner', label: 'QR Scanner', icon: QrCode },
+    { href: '/admin/settings', label: 'Settings', icon: Settings },
   ];
 
   const handleLinkClick = () => {
@@ -68,62 +78,76 @@ export default function Sidebar() {
   };
 
   return (
-    <div className={`
-      fixed top-16 left-0 h-[calc(100vh-4rem)] bg-white shadow-lg z-30 transform transition-transform duration-300 ease-in-out
-      md:relative md:top-0 md:h-full md:translate-x-0 md:shadow-md
+    <aside className={`
+      fixed top-16 left-0 h-[calc(100vh-4rem)] bg-white border-r border-slate-200 shadow-xl z-50 transform transition-transform duration-300 ease-in-out
+      md:relative md:top-0 md:h-full md:translate-x-0 md:shadow-none
       ${isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
-      w-64
+      w-64 flex flex-col justify-between shrink-0
     `}>
       <div className="flex flex-col h-full">
-        <div className="flex items-center justify-between p-4 border-b bg-indigo-600 md:hidden">
-          <h1 className="text-lg font-bold text-white">
-            Admin Panel
-          </h1>
+        {/* Mobile Header */}
+        <div className="flex items-center justify-between p-4 border-b border-slate-100 bg-gradient-to-r from-indigo-600 to-violet-600 md:hidden text-white">
+          <div className="flex items-center gap-2 font-bold text-lg">
+            <Sparkles className="w-5 h-5" />
+            <span>Admin Panel</span>
+          </div>
           <button
             onClick={close}
-            className="text-white p-1 hover:bg-indigo-700 rounded"
+            className="p-1.5 hover:bg-white/10 rounded-lg transition-colors"
             aria-label="Close menu"
           >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
+            <X className="w-5 h-5 text-white" />
           </button>
         </div>
         
-        <div className="hidden md:block p-4 border-b">
-          <h1 className="text-xl font-bold text-gray-800">Admin Panel</h1>
+        {/* Desktop Brand Header */}
+        <div className="hidden md:flex items-center gap-2.5 p-5 border-b border-slate-100">
+          <div className="w-8 h-8 rounded-lg bg-indigo-600 text-white flex items-center justify-center font-bold shadow-xs">
+            D
+          </div>
+          <h1 className="text-lg font-bold text-slate-800 tracking-tight">Digivite Admin</h1>
         </div>
         
-        <nav className="flex-1 p-4 overflow-y-auto">
-          <ul className="space-y-2">
-            {navItems.map((item) => (
-              <li key={item.href}>
-                <Link
-                  href={item.href}
-                  onClick={handleLinkClick}
-                  className={`
-                    flex items-center p-3 rounded-lg transition-colors duration-200 text-sm sm:text-base
-                    ${pathname === item.href 
-                      ? 'bg-indigo-50 text-indigo-600 border-r-2 border-indigo-600' 
-                      : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
-                    }
-                  `}
-                >
-                  <span className="mr-3 text-lg">{item.icon}</span>
-                  <span className="font-medium">{item.label}</span>
-                </Link>
-              </li>
-            ))}
+        {/* Navigation items */}
+        <nav className="flex-1 p-3 overflow-y-auto space-y-1">
+          <div className="px-3 py-2 text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
+            Navigation
+          </div>
+          <ul className="space-y-1">
+            {navItems.map((item) => {
+              const Icon = item.icon;
+              const isActive = pathname === item.href;
+              
+              return (
+                <li key={item.href}>
+                  <Link
+                    href={item.href}
+                    onClick={handleLinkClick}
+                    className={`
+                      flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition-all duration-200 text-sm font-medium
+                      ${isActive 
+                        ? 'bg-indigo-50/80 text-indigo-600 shadow-xs font-semibold' 
+                        : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                      }
+                    `}
+                  >
+                    <Icon className={`w-5 h-5 ${isActive ? 'text-indigo-600' : 'text-slate-400 group-hover:text-slate-600'}`} />
+                    <span>{item.label}</span>
+                  </Link>
+                </li>
+              );
+            })}
           </ul>
-          <p className='text-sm mt-16'>Double click to navigate!</p>
         </nav>
         
-        <div className="p-4 border-t bg-gray-50">
-          <div className="text-xs text-gray-500 text-center">
-            Admin Dashboard v1.0
+        {/* Footer */}
+        <div className="p-4 border-t border-slate-100 bg-slate-50/50">
+          <div className="flex items-center gap-3">
+            <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+            <span className="text-xs font-medium text-slate-500">System Online</span>
           </div>
         </div>
       </div>
-    </div>
+    </aside>
   );
-}
+}
