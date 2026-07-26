@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import jsQR from 'jsqr';
+import { Camera, AlertCircle, RefreshCw } from 'lucide-react';
 
 type ScanResult = {
   ok: boolean;
@@ -57,7 +58,7 @@ export default function Scanner({ onResult }: { onResult: (res: ScanResult) => v
       }
 
       if (!stream) {
-        setError('Unable to access camera. Please allow camera permissions or use a supported device.');
+        setError('Unable to access camera. Please check camera permissions or ensure device supports video capture.');
         setScanning(false);
         return;
       }
@@ -108,7 +109,7 @@ export default function Scanner({ onResult }: { onResult: (res: ScanResult) => v
           handleScanned(code.data);
         }
       } catch (err) {
-        // implement parse errors
+        // handle parse errors silently
       }
     };
 
@@ -119,7 +120,7 @@ export default function Scanner({ onResult }: { onResult: (res: ScanResult) => v
       scanningNow = true;
 
       try {
-        onResultRef.current({ ok: false, message: 'Verifying...' });
+        onResultRef.current({ ok: false, message: 'Verifying QR pass...' });
 
         const res = await fetch('/api/guest/verify', {
           method: 'POST',
@@ -136,7 +137,7 @@ export default function Scanner({ onResult }: { onResult: (res: ScanResult) => v
         }
       } catch (err: any) {
         console.error('verify error', err);
-        onResultRef.current({ ok: false, message: 'Server error during verification' });
+        onResultRef.current({ ok: false, message: 'Server connection error' });
       } finally {
         setTimeout(() => {
           scanningNow = false;
@@ -157,17 +158,57 @@ export default function Scanner({ onResult }: { onResult: (res: ScanResult) => v
   }, []);
 
   return (
-    <div className="w-full">
+    <div className="w-full space-y-3">
       {error ? (
-        <div className="p-4 text-sm text-red-600">{error}</div>
+        <div className="p-6 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-sm font-medium flex flex-col items-center text-center gap-3">
+          <AlertCircle className="w-8 h-8 text-rose-600" />
+          <span>{error}</span>
+        </div>
       ) : (
-        <div className="relative w-full">
-          <video ref={videoRef} className="w-full h-auto rounded bg-black" playsInline muted />
-          <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
-            <div className="w-64 h-40 sm:w-80 sm:h-56 border-4 border-dashed border-indigo-400 rounded-md" />
+        <div className="relative w-full rounded-2xl overflow-hidden bg-slate-950 border border-slate-800 shadow-2xl group">
+          {/* Video Container */}
+          <div className="relative aspect-4/3 w-full bg-black flex items-center justify-center overflow-hidden">
+            <video 
+              ref={videoRef} 
+              className="w-full h-full object-cover" 
+              playsInline 
+              muted 
+            />
+
+            {/* Glowing Target Frame Overlay */}
+            <div className="absolute inset-0 pointer-events-none flex items-center justify-center p-6">
+              <div className="relative w-56 h-56 sm:w-64 sm:h-64 border-2 border-white/20 rounded-3xl overflow-hidden shadow-2xl">
+                {/* Corner Markers */}
+                <div className="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4 border-indigo-500 rounded-tl-xl" />
+                <div className="absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4 border-indigo-500 rounded-tr-xl" />
+                <div className="absolute bottom-0 left-0 w-8 h-8 border-b-4 border-l-4 border-indigo-500 rounded-bl-xl" />
+                <div className="absolute bottom-0 right-0 w-8 h-8 border-b-4 border-r-4 border-indigo-500 rounded-br-xl" />
+
+                {/* Animated Scanning Line */}
+                <div className="absolute inset-x-0 h-1 bg-gradient-to-r from-transparent via-indigo-400 to-transparent animate-pulse shadow-[0_0_15px_rgba(99,102,241,0.8)] top-1/2 -translate-y-1/2" />
+              </div>
+            </div>
+
+            {/* Camera Status Badge */}
+            <div className="absolute top-3 left-3 z-10">
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-black/60 backdrop-blur-md border border-white/10 text-xs font-semibold text-white">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
+                <Camera className="w-3.5 h-3.5 text-indigo-400" />
+                <span>{scanning ? 'Camera Live' : 'Initializing...'}</span>
+              </div>
+            </div>
           </div>
+
           <canvas ref={canvasRef} className="hidden" />
-          <div className="mt-2 text-sm text-gray-600">Scanning... point camera at QR code</div>
+
+          {/* Footer bar */}
+          <div className="p-3 bg-slate-900 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400">
+            <span className="flex items-center gap-1.5">
+              <RefreshCw className="w-3.5 h-3.5 text-indigo-400 animate-spin" />
+              Point viewfinder at guest QR code
+            </span>
+            <span className="text-[11px] font-mono text-slate-500">Auto-Detect</span>
+          </div>
         </div>
       )}
     </div>
