@@ -19,6 +19,26 @@ export default function DigitalInviteLanding() {
   const [isSubmitting, setIsSubmitting ] = useState<boolean>(false);
   const [submitMessage, setSubmitMessage ] = useState<string>('');
 
+  // Interactive 3D tilt state for Hero preview card
+  const [heroTilt, setHeroTilt] = useState({ x: 0, y: 0 });
+  const [heroRsvpActive, setHeroRsvpActive] = useState(false);
+
+  const handleHeroMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const card = e.currentTarget;
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+    const rotateX = ((y - centerY) / centerY) * -12;
+    const rotateY = ((x - centerX) / centerX) * 12;
+    setHeroTilt({ x: rotateX, y: rotateY });
+  };
+
+  const handleHeroMouseLeave = () => {
+    setHeroTilt({ x: 0, y: 0 });
+  };
+
   const validateForm = (): boolean => {
     const newErrors: FormErrors = {};
 
@@ -42,7 +62,6 @@ export default function DigitalInviteLanding() {
 
     setErrors(newErrors);
     return Object.keys(newErrors).length == 0;
-
   };
 
   const handleInputChange = (
@@ -60,7 +79,6 @@ export default function DigitalInviteLanding() {
        [name]: undefined
       }));
     }
-
   };
 
   const handleSubmit = async (e?: React.FormEvent) => {
@@ -85,7 +103,7 @@ export default function DigitalInviteLanding() {
       const data = await response.json();
 
       if(response.ok) {
-        setSubmitMessage('{`Please also reach out to us via, Whatsapp for fast response. Message sent successfully! We\'ll get back to you soon.`}');
+        setSubmitMessage('Please also reach out to us via, Whatsapp for fast response. Message sent successfully! We\'ll get back to you soon.');
         setFormData({
           fullName: '',
           email: '',
@@ -101,7 +119,6 @@ export default function DigitalInviteLanding() {
     } finally {
       setIsSubmitting(false);
     }
-
   };
 
   const services = [
@@ -175,19 +192,10 @@ export default function DigitalInviteLanding() {
   const contactRef = useRef(null);
 
   useEffect(() => {
-    // debug helper - remove in production
-    // const debug = (entry: IntersectionObserverEntry) => {
-    //   // eslint-disable-next-line no-console
-    //   console.log('[IO]', entry.target.id, 'isIntersecting:', entry.isIntersecting, 'ratio:', entry.intersectionRatio, 'boundingTop:', entry.boundingClientRect.top);
-    // };
-
     const headerHeight = 80;
     const io = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          // debug(entry);
-
-          // Using intersectionRatio and isIntersecting to be more robust
           if (entry.target.id === 'portfolio' && entry.intersectionRatio >= 0.12) {
             setPortfolioInView(true);
           }
@@ -197,7 +205,6 @@ export default function DigitalInviteLanding() {
         });
       },
       {
-        root: null,
         rootMargin: `-${headerHeight}px 0px -40px 0px`,
         threshold: [0, 0.08, 0.12, 0.3],
       }
@@ -218,6 +225,8 @@ export default function DigitalInviteLanding() {
         href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
       />
       <div className="relative min-h-screen">
+        
+        {/* Navigation - Maintained Original Structure & Styling */}
         <nav className="fixed top-0 w-full z-50 bg-transparent backdrop-blur-sm">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center h-20">
@@ -284,65 +293,129 @@ export default function DigitalInviteLanding() {
           </div>
         </nav>
 
-        <section className="relative h-[700px]">
+        {/* REDESIGNED & ELEVATED HERO SECTION (AWWWARDS WINNING MOTIONS & EDITORIAL LAYOUT) */}
+        <section className="relative min-h-screen pt-24 pb-16 flex items-center bg-black overflow-hidden">
+          
+          {/* Background Image Layer */}
           <div className="absolute inset-0">
             <Image
               src="/hero.jpg"
               alt="Hero Background"
               fill
-              className="object-cover"
+              className="object-cover opacity-40 scale-105 transition-transform duration-1000"
               priority
             />
           </div>
           
-          <div className="absolute inset-0 bg-black/75"></div>
+          {/* Gradient Overlay for Depth */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/75 to-black/50" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(0,0,0,0)_0%,rgba(0,0,0,0.8)_100%)]" />
+
+          {/* Abstract Grid Accents */}
+          <div className="absolute inset-0 opacity-15 pointer-events-none bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:24px_24px]" />
           
-          <div className="relative z-10 h-full flex items-end pb-20 px-4 sm:px-6 lg:px-8">
-            <div className="max-w-7xl mx-auto w-full">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-end">
-                <div className="relative">
-                  <p className="font-playfair text-white/90 text-lg mb-36 tracking-wider uppercase">
-                    [Beautiful Digital Invitations]
-                  </p>
-                  
-                  <h1 className="font-dm-serif text-white text-7xl sm:text-8xl lg:text-[200px] leading-none tracking-tight">
-                    DIGIVITE
-                  </h1>
-                </div>
+          <div className="relative z-10 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 pt-12">
+            
+            {/* Top Awwwards Category Pill */}
+            <div className="flex items-center gap-3 mb-8">
+              <span className="inline-block w-2.5 h-2.5 rounded-full bg-white animate-pulse" />
+              <p className="font-playfair text-white/90 text-sm sm:text-base tracking-[0.2em] uppercase">
+                [ Beautiful Digital Invitations ]
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-end">
+              
+              {/* Left Column: Editorial Headline & Big Brand Typography */}
+              <div className="lg:col-span-7">
+                <h1 className="font-dm-serif text-white text-6xl sm:text-8xl lg:text-[140px] xl:text-[160px] leading-[0.88] tracking-tight uppercase select-none drop-shadow-2xl">
+                  DIGIVITE
+                </h1>
                 
-                <div className="flex flex-col items-start">
-                  <div className="flex items-start gap-6 mb-8 md:mb-16 z-40">
-                    <div className="relative w-[300px] h-[200px] hidden md:flex">
+                <p className="mt-8 font-playfair text-white/80 text-xl sm:text-2xl max-w-xl leading-relaxed">
+                  Crafting bespoke, high-motion digital invitation websites for extraordinary weddings, galas, and special occasions.
+                </p>
+
+                <div className="mt-10 flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
+                  <a 
+                    href="#contact" 
+                    className="bg-white text-black font-playfair px-8 py-4 rounded-full text-lg font-medium transition-all transform hover:scale-105 shadow-2xl hover:bg-gray-100 text-center"
+                  >
+                    Start Your Project
+                  </a>
+                  <a 
+                    href="https://buildwithyehhmii.vercel.app/" 
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="border-2 border-white/80 text-white hover:bg-white hover:text-black font-playfair px-8 py-4 rounded-full text-lg font-medium transition-all text-center backdrop-blur-sm"
+                  >
+                    View Portfolio
+                  </a>
+                </div>
+              </div>
+              
+              {/* Right Column: Interactive 3D Preview Card */}
+              <div className="lg:col-span-5 flex justify-center lg:justify-end">
+                <div 
+                  className="perspective-1000 w-full max-w-md"
+                  onMouseMove={handleHeroMouseMove}
+                  onMouseLeave={handleHeroMouseLeave}
+                >
+                  <div 
+                    className="relative rounded-2xl p-6 bg-white/10 backdrop-blur-md border border-white/20 shadow-[0_20px_50px_rgba(0,0,0,0.8)] transition-transform duration-150 ease-out overflow-hidden"
+                    style={{
+                      transform: `rotateX(${heroTilt.x}deg) rotateY(${heroTilt.y}deg)`,
+                      transformStyle: 'preserve-3d',
+                    }}
+                  >
+                    {/* Display Image Preview */}
+                    <div className="relative w-full h-56 rounded-xl overflow-hidden mb-6 border border-white/10">
                       <Image
                         src="/display.jpg"
-                        alt="Digital Invitation"
+                        alt="Digital Invitation Preview"
                         fill
-                        className="rounded-lg object-cover shadow-xl grayscale"
+                        className="object-cover filter grayscale hover:grayscale-0 transition-all duration-500"
                       />
-                      <div className="absolute inset-0 bg-black/45 rounded-lg" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                      
+                      <div className="absolute top-3 left-3 bg-black/60 backdrop-blur-sm px-3 py-1 rounded-full border border-white/20">
+                        <span className="font-playfair text-white text-xs tracking-widest uppercase">Bespoke Suite</span>
+                      </div>
                     </div>
-                    <div className="flex-1">
-                      <p className="font-playfair text-white text-lg leading-relaxed max-w-md text-left">
-                        Create stunning, personalized digital invitations for your special events. 
-                        Elegant designs, easy RSVP management, and eco-friendly solution.
+
+                    {/* Interactive Content */}
+                    <div className="space-y-3">
+                      <h3 className="font-dm-serif text-white text-2xl tracking-wide">
+                        Sophia & Alexander
+                      </h3>
+                      <p className="font-playfair text-white/70 text-sm leading-relaxed">
+                        Request the honor of your presence for their wedding celebration in Paris.
                       </p>
+
+                      <div className="pt-4 border-t border-white/15 flex items-center justify-between">
+                        <button
+                          onClick={() => setHeroRsvpActive(!heroRsvpActive)}
+                          className={`px-5 py-2.5 rounded-full font-playfair text-sm transition-all duration-300 ${
+                            heroRsvpActive
+                              ? 'bg-white text-black font-semibold shadow-lg'
+                              : 'bg-white/20 text-white border border-white/30 hover:bg-white hover:text-black'
+                          }`}
+                        >
+                          {heroRsvpActive ? '✓ RSVP Confirmed' : 'Simulate RSVP Preview'}
+                        </button>
+                        <span className="font-playfair text-white/50 text-xs">Interactive Demo</span>
+                      </div>
                     </div>
-                  </div>
-                  
-                  <div className="flex flex-col sm:flex-row gap-4 z-40">
-                    <a href="#contact" className="bg-white text-black font-playfair px-8 py-4 rounded-full text-lg font-medium transition-all transform hover:scale-105 shadow-xl hover:shadow-2xl">
-                      Start Your Project
-                    </a>
-                    <a href="https://buildwithyehhmii.vercel.app/" className="border-2 border-white text-white hover:bg-white hover:text-black font-playfair px-8 py-4 rounded-full text-lg font-medium transition-all">
-                      View Portfolio
-                    </a>
                   </div>
                 </div>
               </div>
+
             </div>
+
           </div>
         </section>
 
+        {/* SERVICES SECTION - MAINTAINED ORIGINAL LOOK & DESIGN */}
         <section id="services" className="relative py-20 bg-black overflow-hidden">
           <div className="absolute inset-0 pointer-events-none">
             <div className="absolute top-10 left-10 w-32 h-32 border border-white/10 rounded-full"></div>
@@ -406,6 +479,7 @@ export default function DigitalInviteLanding() {
           </div>
         </section>
 
+        {/* PORTFOLIO SECTION - MAINTAINED ORIGINAL LOOK & DESIGN */}
         <section ref={portfolioRef} id="portfolio" className="relative py-20 bg-[#dfdfdf] overflow-hidden">
           <div className="absolute inset-0 pointer-events-none">
             <div className="absolute top-16 left-8 w-20 h-20 border border-black/10 rotate-45"></div>
@@ -424,8 +498,6 @@ export default function DigitalInviteLanding() {
                 <div className="animate-pulse text-black font-bold text-lg tracking-wider whitespace-nowrap">
                   DIGIVITE • DIGIVITE • DIGIVITE • DIGIVITE • DIGIVITE • DIGIVITE • DIGIVITE • DIGIVITE • DIGIVITE • DIGIVITE • DIGIVITE • DIGIVITE • 
                 </div>
-                {/* <div className="absolute inset-0 bg-black/75"></div> */}
-
               </div>
             </div>
             
@@ -496,6 +568,8 @@ export default function DigitalInviteLanding() {
             <div className={`text-center mt-16 ${portfolioInView ? 'animate__animated animate__fadeInUp animate__delay-2s' : 'opacity-0'}`}>
               <a 
                 href="https://buildwithyehhmii.vercel.app/" 
+                target="_blank"
+                rel="noopener noreferrer"
                 className="inline-flex items-center gap-3 bg-black text-white font-playfair px-10 py-4 rounded-full text-lg font-medium border-2 border-black hover:bg-white hover:text-black transition-all duration-300 shadow-lg hover:shadow-xl"
               >
                 View Full Portfolio
@@ -505,6 +579,7 @@ export default function DigitalInviteLanding() {
           </div>
         </section>
 
+        {/* CONTACT SECTION - MAINTAINED ORIGINAL LOOK & DESIGN */}
         <section ref={contactRef} id="contact" className="relative py-20 bg-gray-100 overflow-hidden">
           <div className="absolute inset-0 opacity-10">
             <div className="w-full h-full" style={{
@@ -742,6 +817,7 @@ export default function DigitalInviteLanding() {
           </div>
         </section>
 
+        {/* FOOTER - MAINTAINED ORIGINAL LOOK & DESIGN */}
         <footer className="relative bg-black text-white py-16 overflow-hidden">
           <div className="absolute inset-0 opacity-5">
             <div className="w-full h-full" style={{
@@ -750,21 +826,17 @@ export default function DigitalInviteLanding() {
           </div>
 
           <div className="absolute inset-0 pointer-events-none">
-            {/* Dark newspaper clippings */}
             <div className="absolute top-12 left-10 w-20 h-28 bg-white/5 border border-white/10 transform rotate-12 shadow-lg"></div>
             <div className="absolute bottom-20 right-16 w-24 h-32 bg-white/5 border border-white/10 transform -rotate-6 shadow-lg"></div>
             <div className="absolute top-1/2 right-8 w-16 h-20 bg-white/5 border border-white/10 transform rotate-45 shadow-lg"></div>
             
-            {/* Typography lines */}
             <div className="absolute top-20 left-1/3 w-40 h-px bg-white/10 transform rotate-12"></div>
             <div className="absolute bottom-1/3 right-1/4 w-32 h-px bg-white/15 transform -rotate-6"></div>
             <div className="absolute top-1/3 left-1/4 w-24 h-px bg-white/10 transform rotate-45"></div>
             
-            {/* Geometric shapes */}
             <div className="absolute top-1/4 right-1/3 w-12 h-12 border border-white/10 rotate-45"></div>
             <div className="absolute bottom-1/4 left-1/3 w-8 h-8 bg-white/10 rounded-full"></div>
             
-            {/* Small dots like ink spots */}
             <div className="absolute top-16 right-1/4 w-3 h-3 bg-white/20 rounded-full"></div>
             <div className="absolute bottom-32 left-1/2 w-2 h-2 bg-white/25 rounded-full"></div>
             <div className="absolute top-3/4 right-1/2 w-4 h-4 bg-white/15 rounded-full"></div>
@@ -871,6 +943,7 @@ export default function DigitalInviteLanding() {
             </div>
           </div>
         </footer>
+
       </div>
     </>
   );
